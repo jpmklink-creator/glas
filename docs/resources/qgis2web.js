@@ -4,12 +4,12 @@ var map = new ol.Map({
     renderer: 'canvas',
     layers: layersList,
     view: new ol.View({
-         maxZoom: 28, minZoom: 1
+        @VIEW@
     })
 });
 
 //initial view - epsg:3857 coordinates if not "Match project CRS"
-map.getView().fit([528452.449449, 6794535.138787, 992319.949451, 7113622.638788], map.getSize());
+map.getView().fit(@BOUNDS@, map.getSize());
 
 //full zooms only
 map.getView().setProperties({constrainResolution: true});
@@ -147,8 +147,8 @@ var featureOverlay = new ol.layer.Vector({
     updateWhileInteracting: true // optional, for instant visual feedback
 });
 
-var doHighlight = false;
-var doHover = false;
+var doHighlight = @DOHIGHLIGHT@;
+var doHover = @ONHOVER@;
 
 function createPopupField(currentFeature, currentFeatureKeys, layer) {
     var popupText = '';
@@ -291,7 +291,7 @@ function onPointerMove(evt) {
                     highlightStyle = new ol.style.Style({
                         image: new ol.style.Circle({
                             fill: new ol.style.Fill({
-                                color: "rgba(255, 255, 0, 1.00)"
+                                color: "@HIGHLIGHTFILL@"
                             }),
                             radius: radius
                         })
@@ -302,7 +302,7 @@ function onPointerMove(evt) {
 
                     highlightStyle = new ol.style.Style({
                         stroke: new ol.style.Stroke({
-                            color: 'rgba(255, 255, 0, 1.00)',
+                            color: '@HIGHLIGHTFILL@',
                             lineDash: null,
                             width: featureWidth
                         })
@@ -311,7 +311,7 @@ function onPointerMove(evt) {
                 } else {
                     highlightStyle = new ol.style.Style({
                         fill: new ol.style.Fill({
-                            color: 'rgba(255, 255, 0, 1.00)'
+                            color: '@HIGHLIGHTFILL@'
                         })
                     })
                 }
@@ -493,52 +493,35 @@ var topRightContainerDiv = document.getElementById('top-right-container')
 var bottomRightContainerDiv = document.getElementById('bottom-right-container')
 
 //title
-
+@TITLE@
 //abstract
-
+@ABSTRACT@
 
 //geolocate
-
-
+@GEOLOCATEHEAD@
+@GEOLOCATE@
 
 //measurement
-
-
-
-
+@MEASURECONTROL@
+@MEASURING@
+@MEASURE@
+@MEASUREUNIT@
 
 //geocoder
-
+@GEOCODINGSCRIPT@
 
 //layer search
-
+@LAYERSEARCH@
 
 //scalebar
-
+@SCALEBAR@
 
 //layerswitcher
+@LAYERSLIST@
 
-var layerSwitcher = new ol.control.LayerSwitcher({
-    activationMode: 'click',
-	startActive: true,
-	tipLabel: "Layers",
-    target: 'top-right-container',
-	collapseLabel: '»',
-	collapseTipLabel: 'Close'
-    });
-map.addControl(layerSwitcher);
-if (hasTouchScreen || isSmallScreen) {
-	document.addEventListener('DOMContentLoaded', function() {
-		setTimeout(function() {
-			layerSwitcher.hidePanel();
-		}, 500);
-	});	
-}
-
-
-
-
-
+@MAPUNITLAYERS@
+@M2PX@
+@GRID@
 
 //attribution
 var bottomAttribution = new ol.control.Attribution({
