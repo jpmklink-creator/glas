@@ -17,20 +17,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Extract fields
-        id: extract
-        run: |
-          BODY="${{ github.event.issue.body }}"
+  id: extract
+  run: |
+    BODY="${{ github.event.issue.body }}"
 
-          NAME=$(echo "$BODY" | awk '/Naam locatie/{getline; print}')
-          ADDRESS=$(echo "$BODY" | awk '/Adres/{getline; print}')
-          URL=$(echo "$BODY" | awk '/Website/{getline; print}')
-          DESC=$(echo "$BODY" | awk '/Beschrijving/{getline; print}')
+    echo "----- DEBUG BODY -----"
+    echo "$BODY"
 
-          echo "name=$NAME" >> $GITHUB_OUTPUT
-          echo "address=$ADDRESS" >> $GITHUB_OUTPUT
-          echo "url=$URL" >> $GITHUB_OUTPUT
-          echo "desc=$DESC" >> $GITHUB_OUTPUT
+    NAME=$(echo "$BODY" | sed -n '/Naam locatie/{n;p;}')
+    ADDRESS=$(echo "$BODY" | sed -n '/Adres/{n;p;}')
+    URL=$(echo "$BODY" | sed -n '/Website/{n;p;}')
+    DESC=$(echo "$BODY" | sed -n '/Beschrijving/{n;p;}')
 
+    echo "name=$NAME" >> $GITHUB_OUTPUT
+    echo "address=$ADDRESS" >> $GITHUB_OUTPUT
+    echo "url=$URL" >> $GITHUB_OUTPUT
+    echo "desc=$DESC" >> $GITHUB_OUTPUT
       - name: Geocode via PDOK
         id: geo
         run: |
