@@ -125,7 +125,7 @@ var jsonSource_community = new ol.source.Vector({
 });
 jsonSource_community.addFeatures(features_community);
 
-var lyr_layer_community = new ol.layer.Vector({
+var layer_community = new ol.layer.Vector({
     declutter: true,
     source: jsonSource_community,
     style: style_kerkfotografie_1, // hergebruik stijl
