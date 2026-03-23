@@ -129,7 +129,7 @@ var layer_community = new ol.layer.Vector({
     declutter: true,
     source: jsonSource_community,
     style: style_kerkfotografie_4, // hergebruik stijl
-    interactive: true,
+    interactive: true,  
     title: 'Community inzendingen'
 });
 
