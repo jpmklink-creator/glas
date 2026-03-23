@@ -37,7 +37,8 @@ jobs:
       - name: Geocode via PDOK
         id: geo
         run: |
-          QUERY=$(echo "${{ steps.extract.outputs.address }}" | sed 's/ /+/g')
+          ADDRESS_CLEAN=$(echo "${{ steps.extract.outputs.address }}" | sed 's/\([0-9]\{4\}\)\([A-Z]\{2\}\)/\1 \2/')
+          QUERY=$(echo "$ADDRESS_CLEAN, Nederland" | sed 's/ /+/g')
 
           RESPONSE=$(curl -s "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=$QUERY")
 
