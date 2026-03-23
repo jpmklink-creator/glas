@@ -128,7 +128,7 @@ jsonSource_community.addFeatures(features_community);
 var layer_community = new ol.layer.Vector({
     declutter: true,
     source: jsonSource_community,
-    style: style_kerkfotografie_1, // hergebruik stijl
+    style: style_kerkfotografie_4, // hergebruik stijl
     interactive: true,
     title: 'Community inzendingen'
 });
