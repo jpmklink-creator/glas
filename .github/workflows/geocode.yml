@@ -33,12 +33,14 @@ jobs:
           echo "address=$ADDRESS" >> $GITHUB_OUTPUT
           echo "url=$URL" >> $GITHUB_OUTPUT
           echo "desc=$DESC" >> $GITHUB_OUTPUT
+          echo "Zoek naar adres:"
+          echo "${{ steps.extract.outputs.address }}"      
 
       - name: Geocode via PDOK
         id: geo
         run: |
-          ADDRESS_CLEAN=$(echo "${{ steps.extract.outputs.address }}" | sed 's/\([0-9]\{4\}\)\([A-Z]\{2\}\)/\1 \2/')
-          QUERY=$(echo "$ADDRESS_CLEAN, Nederland" | sed 's/ /+/g')
+          ADDRESS="${{ steps.extract.outputs.address }}"
+          QUERY=$(echo "$ADDRESS, Nederland" | sed 's/ /+/g')
 
           RESPONSE=$(curl -s "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=$QUERY")
 
