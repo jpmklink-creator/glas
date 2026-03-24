@@ -6,7 +6,7 @@ on:
 
 jobs:
   geocode:
-    if: "contains(github.event.issue.title, '[LOCATIE]')"
+    
     runs-on: ubuntu-latest
 
     permissions:
