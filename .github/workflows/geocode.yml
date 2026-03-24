@@ -23,4 +23,13 @@ jobs:
 
       - name: Append to community data
         run: |
-          echo "test" >> docs/data/community.js
+          echo "// test $(date)" >> docs/data/community.js
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add docs/data/community.js
+          git commit -m "test update"
+          git push
+          
