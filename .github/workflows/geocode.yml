@@ -26,13 +26,31 @@ jobs:
 
       - name: Append to community data
         run: |
-          echo "TEST WRITE $(date)"
-          echo "// test $(date)" >> docs/data/community.js
+          FILE="docs/data/community.js"
 
-      - name: Commit changes
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add docs/data/community.js
-          git commit -m "test update" || echo "nothing to commit"
-          git push
+          LAT=${{ steps.geo.outputs.lat }}
+          LON=${{ steps.geo.outputs.lon }}
+
+          NAME="Test locatie"
+          URL="https://example.com"
+          DESC="test beschrijving"
+
+          sed '1s/^var.*= //' $FILE > temp.json
+          sed -i '$ s/;$//' temp.json
+
+          jq '.features += [{
+            "type": "Feature",
+            "properties": {
+              "name": "'"$NAME"'",
+              "url": "'"$URL"'",
+              "description": "'"$DESC"'"
+            },
+           "geometry": {
+             "type": "Point",
+             "coordinates": ['"$LON"', '"$LAT"']
+           }
+          }]' temp.json > updated.json
+
+          echo "var json_community = " > $FILE
+          cat updated.json >> $FILE
+          echo ";" >> $FILE
