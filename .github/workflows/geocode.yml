@@ -13,4 +13,10 @@ jobs:
       - name: Extract fields
         id: extract
         run: |
-          echo "Test extract werkt"
+          echo "adres=test" >> $GITHUB_OUTPUT
+
+      - name: Geocode via PDOK
+        id: geo
+        run: |
+          echo "lat=52.37" >> $GITHUB_OUTPUT
+          echo "lon=4.90" >> $GITHUB_OUTPUT
