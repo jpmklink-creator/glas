@@ -36,4 +36,3 @@ jobs:
           git add docs/data/community.js
           git commit -m "test update" || echo "nothing to commit"
           git push
-          
