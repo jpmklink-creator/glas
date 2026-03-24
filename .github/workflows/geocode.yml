@@ -1,95 +1,9 @@
-name: Geocode new locations
+name: test
 
 on: issues
 
 jobs:
-  geocode:
+  test:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Extract fields
-        id: extract
-        run: |
-          BODY="${{ github.event.issue.body }}"
-
-          echo "----- DEBUG BODY -----"
-          echo "$BODY" 
-
-          NAME=$(echo "$BODY" | sed -n '/Naam locatie/{n;p;}')
-          ADDRESS=$(echo "$BODY" | sed -n '/Adres/{n;p;}')
-          URL=$(echo "$BODY" | sed -n '/Website/{n;p;}')
-          DESC=$(echo "$BODY" | sed -n '/Beschrijving/{n;p;}')
-
-          echo "name=$NAME" >> $GITHUB_OUTPUT
-          echo "address=$ADDRESS" >> $GITHUB_OUTPUT
-          echo "url=$URL" >> $GITHUB_OUTPUT
-          echo "desc=$DESC" >> $GITHUB_OUTPUT
-          echo "Zoek naar adres:"
-          echo "${{ steps.extract.outputs.address }}"      
-
-      - name: Geocode via PDOK
-        id: geo
-        run: |
-          ADDRESS="${{ steps.extract.outputs.address }}"
-          QUERY=$(echo "$ADDRESS, Nederland" | sed 's/ /+/g')
-
-          RESPONSE=$(curl -s "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=$QUERY")
-
-          POINT=$(echo $RESPONSE | jq -r '.response.docs[0].centroide_ll')
-
-          POINT=$(echo $RESPONSE | jq -r '.response.docs[0].centroide_ll // empty')
-
-          if [ -z "$POINT" ]; then
-            echo "Geen coördinaten gevonden voor adres: ${{ steps.extract.outputs.address }}"
-            exit 0
-          fi
-
-          LON=$(echo $POINT | sed -E 's/POINT\(([0-9.]+) ([0-9.]+)\)/\1/')
-          LAT=$(echo $POINT | sed -E 's/POINT\(([0-9.]+) ([0-9.]+)\)/\2/')
-
-          echo "lat=$LAT" >> $GITHUB_OUTPUT
-          echo "lon=$LON" >> $GITHUB_OUTPUT
-
-    - name: Append to community data
-  run: |
-    FILE="docs/data/community.js"
-
-    LAT=${{ steps.geo.outputs.lat }}
-    LON=${{ steps.geo.outputs.lon }}
-
-    NAME="${{ steps.extract.outputs.name }}"
-    URL="${{ steps.extract.outputs.url }}"
-    DESC="${{ steps.extract.outputs.desc }}"
-
-    sed '1s/^var.*= //' $FILE > temp.json
-    sed -i '$ s/;$//' temp.json
-
-    jq '.features += [{
-      "type": "Feature",
-      "properties": {
-        "name": "'"$NAME"'",
-        "url": "'"$URL"'",
-        "description": "'"$DESC"'"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": ['"$LON"', '"$LAT"']
-      }
-    }]' temp.json > updated.json
-
-    echo "var json_community = " > $FILE
-    cat updated.json >> $FILE
-    echo ";" >> $FILE
-
-      - name: Commit changes
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add docs/_data/locations.yml
-          git commit -m "Add new location from issue"
-          git push
+      - run: echo "werkt"
