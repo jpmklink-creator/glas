@@ -20,3 +20,7 @@ jobs:
         run: |
           echo "lat=52.37" >> $GITHUB_OUTPUT
           echo "lon=4.90" >> $GITHUB_OUTPUT
+
+      - name: Append to community data
+        run: |
+          echo "test" >> docs/data/community.js
