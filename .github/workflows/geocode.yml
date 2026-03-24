@@ -1,6 +1,8 @@
 name: Geocode new locations
 
-on: issues
+on:
+  issues:
+    types: [opened]
 
 jobs:
   geocode:
