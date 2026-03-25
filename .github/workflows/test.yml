@@ -14,26 +14,22 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Append to community data
+      - name: Append simple feature
         run: |
-          FILE="docs/data/community.js"
-
-          sed '1s/^var.*= //' $FILE > temp.json
-          sed -i '$ s/;$//' temp.json
-
-          jq '.features += [{
-           "type": "Feature",
-           "properties": {
-             "name": "Test locatie",
-             "url": "https://example.com",
-             "description": "test beschrijving"
+          echo 'var json_community = {
+           type": "FeatureCollection",
+           "features": [
+          {
+          "type": "Feature",
+          "properties": {
+            "name": "Test locatie",
+            "url": "https://example.com",
+            "description": "test"
           },
           "geometry": {
-          "type": "Point",
-          "coordinates": [4.90, 52.37]
+            "type": "Point",
+            "coordinates": [4.90, 52.37]
+           }
           }
-          }]' temp.json > updated.json
-
-       echo "var json_community = " > $FILE
-       cat updated.json >> $FILE
-       echo ";" >> $FILE
+         }
+       };' > docs/data/community.js
