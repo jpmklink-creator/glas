@@ -118,19 +118,19 @@ var lyr_oostbrabant_7 = new ol.layer.Vector({
             });
 
 // --- COMMUNITY LAYER ---
-//var format_community = new ol.format.GeoJSON();
+var format_community = new ol.format.GeoJSON();
 
-//var features_community = format_community.readFeatures(json_community, 
-//  {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
+var features_community = format_community.readFeatures(json_community, 
+  {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
 
-//var source_community = new ol.source.Vector({});
-//source_community.addFeatures(features_community);
+var source_community = new ol.source.Vector({});
+source_community.addFeatures(features_community);
 
-//var layer_community = new ol.layer.Vector({
-//    source: source_community,
-//   style: null,
-//});
-
+var layer_community = new ol.layer.Vector({
+    source: source_community,
+    style: null,
+    title: 'Community inzendingen'
+});
         
 
 
