@@ -3,7 +3,7 @@ var json_community = {
   "features": [
     {
       "type": "Feature",
-      "properties": {
+      "properties": { 
         "name": "Test locatie",
         "url": "",
         "description": ""
