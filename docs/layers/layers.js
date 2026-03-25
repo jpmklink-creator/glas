@@ -118,19 +118,19 @@ var lyr_oostbrabant_7 = new ol.layer.Vector({
             });
 
 // --- COMMUNITY LAYER ---
-var format_community = new ol.format.GeoJSON();
+//var format_community = new ol.format.GeoJSON();
 
-var features_community = format_community.readFeatures(json_community, 
-  {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
+//var features_community = format_community.readFeatures(json_community, 
+//  {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
 
-var source_community = new ol.source.Vector({});
-source_community.addFeatures(features_community);
+//var source_community = new ol.source.Vector({});
+//source_community.addFeatures(features_community);
 
-var layer_community = new ol.layer.Vector({
-    source: source_community,
-    style: null,
-    title: 'Community inzendingen'
-});
+//var layer_community = new ol.layer.Vector({
+//    source: source_community,
+//    style: null,
+//    title: 'Community inzendingen'
+//});
         
 
 
@@ -144,7 +144,7 @@ lyr_kerkfotografie_4.setVisible(true);
 lyr_mijnstreek_5.setVisible(true);
 lyr_maas_en_waal_6.setVisible(true);
 lyr_oostbrabant_7.setVisible(true);
-layer_community.setVisible(true);
+//layer_community.setVisible(true);
 var layersList = [
   lyr_OpenStreetMap_0,
   lyr_webpaginas_1,
@@ -153,8 +153,7 @@ var layersList = [
   lyr_kerkfotografie_4,
   lyr_mijnstreek_5,
   lyr_maas_en_waal_6,
-  lyr_oostbrabant_7,
-  layer_community
+  lyr_oostbrabant_7
 ];
 lyr_webpaginas_1.set('fieldAliases', {'id': 'id', 'plaats': 'plaats', 'link': 'link', 'gebouw': 'gebouw', 'extra': 'extra', });
 lyr_boeken_2.set('fieldAliases', {'id': 'id', 'plaats': 'plaats', 'gebouw': 'gebouw', 'titel': 'titel', 'auteur': 'auteur', 'uitgever': 'uitgever', 'isbn': 'isbn', });
