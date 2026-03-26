@@ -154,8 +154,30 @@ console.log("IK BEN DE JUISTE HTML");
         console.log("VOOR COMMUNITY");
         </script>
 
-        <src="data/community.js"></script>
+        //<src="data/community.js"></script>
 
+        <script>
+        window.json_community = {
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "properties": { 
+              "name": "Test locatie",
+              "url": "",
+              "description": ""
+            },
+              "geometry": {
+                "type": "Point",
+                "coordinates": [4.90, 52.37]
+              }
+            }
+          ]
+        };
+        console.log("COMMUNITY INLINE OK");
+        </script>
+
+            
         <script>
         console.log("NA COMMUNITY");
         </script>
