@@ -148,7 +148,7 @@ lyr_kerkfotografie_4.setVisible(true);
 lyr_mijnstreek_5.setVisible(true);
 lyr_maas_en_waal_6.setVisible(true);
 lyr_oostbrabant_7.setVisible(true);
-//layer_community.setVisible(true);
+layer_community.setVisible(true);
 var layersList = [
   lyr_OpenStreetMap_0,
   lyr_webpaginas_1,
