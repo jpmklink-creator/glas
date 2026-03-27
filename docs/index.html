@@ -139,6 +139,9 @@
         json_community.features.push(feature);
 
         // 👉 marker op kaart
+
+        json_community.features.push(feature);
+            
         layer_community.getSource().addFeature(
           new ol.format.GeoJSON().readFeature(feature, {
             dataProjection: 'EPSG:4326',
