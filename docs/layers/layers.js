@@ -144,6 +144,8 @@ var lyr_community = new ol.layer.Vector({
         });
     }
 });
+
+
 lyr_OpenStreetMap_0.setVisible(true);
 lyr_webpaginas_1.setVisible(true);
 lyr_boeken_2.setVisible(true);
