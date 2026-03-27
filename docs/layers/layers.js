@@ -140,10 +140,10 @@ var lyr_community = new ol.layer.Vector({
                     color: '#ffffff',
                     width: 1
                 })
-            })
-        });
-    }
-});
+            })  //image
+        }); //return
+    } // style
+}); //var
 
 
 lyr_OpenStreetMap_0.setVisible(true);
