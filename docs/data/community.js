@@ -1,14 +1,15 @@
-console.log("COMMUNITY JS GELADEN");
-
 var json_community = {
   "type": "FeatureCollection",
   "features": [
     {
       "type": "Feature",
-      "properties": { 
+      "properties": {
         "name": "Test locatie",
-        "url": "",
-        "description": ""
+        "straat": "",
+        "huisnummer": "",
+        "postcode": "",
+        "plaats": "",
+        "url": ""
       },
       "geometry": {
         "type": "Point",
@@ -17,4 +18,3 @@ var json_community = {
     }
   ]
 };
- 
