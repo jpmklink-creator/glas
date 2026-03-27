@@ -125,25 +125,25 @@ var features_community = format_community.readFeatures(json_community, {
   featureProjection: 'EPSG:3857'
 });
 
-var source_community = new ol.source.Vector({});
-source_community.addFeatures(features_community);
 
-style: function(feature) {
-    return new ol.style.Style({
-        image: new ol.style.Circle({
-            radius: 6,
-            fill: new ol.style.Fill({
-                color: 'red'
-            }),
-            stroke: new ol.style.Stroke({
-                color: '#ffffff',
-                width: 1
+var lyr_community = new ol.layer.Vector({
+    declutter: false,
+    source: source_community,
+    style: function(feature) {
+        return new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 6,
+                fill: new ol.style.Fill({
+                    color: 'red'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#ffffff',
+                    width: 1
+                })
             })
-        })
-    });
-}
-
-
+        });
+    }
+});
 lyr_OpenStreetMap_0.setVisible(true);
 lyr_webpaginas_1.setVisible(true);
 lyr_boeken_2.setVisible(true);
