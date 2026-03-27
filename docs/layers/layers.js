@@ -190,7 +190,7 @@ lyr_oostbrabant_7.set('fieldLabels', {'id': 'no label', 'plaats': 'no label', 'k
 lyr_oostbrabant_7.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = 'normal';
 });
-lyr_community.set('fieldAliases', {
+layer_community.set('fieldAliases', {
     'name': 'Naam',
     'straat': 'Straat',
     'huisnummer': 'Huisnr',
@@ -199,7 +199,7 @@ lyr_community.set('fieldAliases', {
     'url': 'Website'
 });
 
-lyr_community.set('fieldImages', {
+layer_community.set('fieldImages', {
     'name': 'TextEdit',
     'straat': 'TextEdit',
     'huisnummer': 'TextEdit',
