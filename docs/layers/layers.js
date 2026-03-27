@@ -118,13 +118,9 @@ var lyr_oostbrabant_7 = new ol.layer.Vector({
             });
 
 // COMMUNITY LAYER
-var format_community = new ol.format.GeoJSON();
-
-var features_community = format_community.readFeatures(json_community, {
-  dataProjection: 'EPSG:4326',
-  featureProjection: 'EPSG:3857'
+var source_community = new ol.source.Vector({
+    features: features_community
 });
-
 
 var lyr_community = new ol.layer.Vector({
     declutter: false,
