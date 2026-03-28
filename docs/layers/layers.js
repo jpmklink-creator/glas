@@ -130,7 +130,7 @@ var source_community = new ol.source.Vector({
 
 var layer_community = new ol.layer.Vector({
 
-// layer_community.set('draggable', true);
+
         
     declutter: false,
     source: source_community,
