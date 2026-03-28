@@ -182,18 +182,17 @@ window.downloadData = function() {
   document.body.removeChild(link);
 };
 </script>
-<script>
-window.onload = function() {
+        
+<scrip>
+window.addEventListener("load", function() {
   const isAdmin = window.location.search.includes("admin");
 
   if (!isAdmin) {
     var el = document.getElementById("form-container");
     if (el) el.style.display = "none";
   }
-};
-</script>
-
-​
+});
+</scrip>​
 
 
 <script>
