@@ -227,14 +227,12 @@ setTimeout(function() {
     return;
   }
 
-  // 👉 interaction voor slepen
   var modify = new ol.interaction.Modify({
     source: layer_community.getSource()
   });
 
   map.addInteraction(modify);
 
-  // 👉 lock functie
   var locked = false;
 
   window.toggleLock = function() {
@@ -249,7 +247,6 @@ setTimeout(function() {
     }
   };
 
-  // 👉 coords opslaan na slepen
   modify.on('modifyend', function(e) {
     e.features.forEach(function(feature) {
       var coord = feature.getGeometry().getCoordinates();
@@ -266,7 +263,7 @@ setTimeout(function() {
     });
   });
 
-}, 1000); // wacht 1 seconde
+}, 1000);
 </script>
 
 window.deleteFeature = function(name) {
@@ -291,7 +288,7 @@ window.deleteFeature = function(name) {
 
   alert("Marker verwijderd");
 };
-        
+       
         
     </body>
 </html>
