@@ -234,7 +234,30 @@ window.toggleLock = function() {
 };
 </script>        
         
+<script>
+// 👉 interaction voor slepen
+var modify = new ol.interaction.Modify({
+  source: layer_community.getSource()
+});
 
+map.addInteraction(modify);
+
+// 👉 lock functie
+var locked = false;
+
+window.toggleLock = function() {
+  locked = !locked;
+
+  if (locked) {
+    map.removeInteraction(modify);
+    alert("Markers vastgezet");
+  } else {
+    map.addInteraction(modify);
+    alert("Markers weer verplaatsbaar");
+  }
+};
+</script>
+        
         
         
     </body>
