@@ -403,8 +403,9 @@ function onSingleClickFeatures(evt) {
     } else {
         popupText += '</ul>';
     }
-	if (feature && feature.get('name') && window.location.search.includes("admin")) {
+	if (typeof feature !== "undefined" && feature && feature.get && feature.get('name') && window.location.search.includes("admin")) {
     popupText += '<li><button onclick="deleteFeature(\'' + feature.get("name") + '\')">🗑️ Verwijder</button></li>';
+	}
 }
 	popupContent = popupText;
     popupCoord = coord;
