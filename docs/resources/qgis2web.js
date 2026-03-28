@@ -513,7 +513,7 @@ var bottomRightContainerDiv = document.getElementById('bottom-right-container')
 //layer search
 
 
-//scalebar
+//scalebar 
 
 
 //layerswitcher
