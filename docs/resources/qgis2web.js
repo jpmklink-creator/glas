@@ -235,10 +235,10 @@ function onPointerMove(evt) {
                 popupText += '<li><table>';
                 popupText += '<a>' + '<b>' + layer.get('popuplayertitle') + '</b>' + '</a>';
 
-				
-               var content = createPopupField(currentFeature, currentFeatureKeys, layer);
-				content = content.replace(/undefined/g, '');
-				popupText += content;
+				console.log(key, currentFeature.get(key));
+      //         var content = createPopupField(currentFeature, currentFeatureKeys, layer);
+		//		content = content.replace(/undefined/g, '');
+		//		popupText += content;
 
 				
                 popupText += '</table></li>';
