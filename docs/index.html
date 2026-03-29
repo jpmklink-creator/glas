@@ -238,6 +238,12 @@ setTimeout(function() {
     return;
   }
 
+  setTimeout(function() {
+
+  var isAdmin = window.location.search.includes("admin");
+
+  if (!isAdmin) return;   // 🚨 STOP voor normale gebruikers
+
   var modify = new ol.interaction.Modify({
     source: layer_community.getSource()
   });
