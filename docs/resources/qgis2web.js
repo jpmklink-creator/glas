@@ -380,9 +380,9 @@ function onSingleClickFeatures(evt) {
 						
                     	 var title = layer.get('popuplayertitle');
 
-						if (!title) {
+				//		if (!title) {
     						title = 'limburg';
-						}
+				//		}
 
 popupText += '<a><b>' + title + '</b></a>';
 						
