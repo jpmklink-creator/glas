@@ -258,6 +258,30 @@ setTimeout(function() {
     }
   };
 
+    window.deleteSelected = function() {
+    var selectedFeature = null;
+    if (!selectedFeature) {
+      alert("Geen marker geselecteerd");
+    return;
+   }
+
+  if (!confirm("Weet je zeker dat je deze marker wilt verwijderen?")) return;
+
+  const id = selectedFeature.get('id');
+
+  layer_community.getSource().removeFeature(selectedFeature);
+
+  json_community.features = json_community.features.filter(function(f) {
+    return f.properties.id !== id;
+  });
+
+  localStorage.setItem('community_data', JSON.stringify(json_community));
+
+  selectedFeature = null;
+
+  alert("Marker verwijderd");
+};
+
   modify.on('modifyend', function(e) {
     e.features.forEach(function(feature) {
       var coord = feature.getGeometry().getCoordinates();
