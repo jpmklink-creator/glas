@@ -1,20 +1,17 @@
-{
+var json_community = {
   "type": "FeatureCollection",
   "features": [
     {
       "type": "Feature",
       "properties": {
- 	"id": 177478253333,
+        "id": 177478253333,
         "name": "Johannes de doper",
         "url": "<a href=\"https://www.glasmalerei-ev-web.de/pages/b256/b256.shtml\" target=\"_blank\">Website</a>",
         "description": "Kerkstraat 1, 6095ND Baexem"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          5.88178756817279,
-          51.229081609383144
-        ]
+        "coordinates": [5.88178756817279, 51.229081609383144]
       }
     },
     {
@@ -27,10 +24,7 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          6.179710727179911,
-          51.474383234377285
-        ]
+        "coordinates": [6.179710727179911, 51.474383234377285]
       }
     },
     {
@@ -43,10 +37,7 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          5.928179920639038,
-          50.93929756508817
-        ]
+        "coordinates": [5.928179920639038, 50.93929756508817]
       }
     },
     {
@@ -59,11 +50,8 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          6.18101277,
-          51.47535941
-        ]
+        "coordinates": [6.18101277, 51.47535941]
       }
     }
   ]
-}
+};
