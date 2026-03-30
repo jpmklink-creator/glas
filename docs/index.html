@@ -192,14 +192,26 @@ function resetForm() {
 
 window.toggleLock = function() {
 
+  console.log("LOCK BUTTON CLICKED");
+
   locked = !locked;
 
+  console.log("locked =", locked);
+
   if (locked) {
+    console.log("REMOVING MODIFY");
     map.removeInteraction(modify);
     alert("🔒 Markers vastgezet");
-  }  //if
-    resetForm(); // die had je al            
- }   //function 
+    resetForm();
+
+  } else {
+    console.log("ADDING MODIFY");
+    if (isAdmin) {
+      map.addInteraction(modify);
+    }
+    alert("🔓 Markers weer verplaatsbaar");
+  }
+}; 
         
         
 }    // wimdow voegtoe        
