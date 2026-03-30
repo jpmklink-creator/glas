@@ -190,31 +190,7 @@ function resetForm() {
   document.getElementById('link').value = "";
 }
 
-window.toggleLock = function() {
 
-  locked = !locked;
-
-  if (locked) {
-
-    map.getInteractions().forEach(function(interaction) {
-      if (interaction instanceof ol.interaction.Modify) {
-        map.removeInteraction(interaction);
-        console.log("MODIFY REMOVED");
-      }
-    });
-
-    alert("🔒 Lock actief");
-
-  } else {
-
-    if (modify) {
-      map.addInteraction(modify);
-      console.log("MODIFY ADDED");
-    }
-
-    alert("🔓 Unlock actief");
-  }
-};
             
             
         
@@ -392,7 +368,32 @@ window.deleteSelected = function() {
 
   alert("Marker verwijderd");
 };
+window.toggleLock = function() {
 
+  locked = !locked;
+
+  if (locked) {
+
+    map.getInteractions().forEach(function(interaction) {
+      if (interaction instanceof ol.interaction.Modify) {
+        map.removeInteraction(interaction);
+        console.log("MODIFY REMOVED");
+      }
+    });
+
+    alert("🔒 Lock actief");
+
+  } else {
+
+    if (modify) {
+      map.addInteraction(modify);
+      console.log("MODIFY ADDED");
+    }
+
+    alert("🔓 Unlock actief");
+  }
+};
+        
         
     </body>
 </html>
