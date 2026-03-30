@@ -118,6 +118,12 @@
 
           const query = `${straat} ${huisnummer}, ${postcode} ${plaats}`;
 
+          const id = (plaats + "_" + naam)
+            .toLowerCase()
+            .replace(/\s+/g, "_")
+            .replace(/[^a-z0-9_]/g, "");
+
+            
           const url = `https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=${encodeURIComponent(query)}`;
 
           const response = await fetch(url);
@@ -162,11 +168,7 @@
           return f.properties.name !== naam;
         });
 
-        const id = (plaats + "_" + naam)
-          .toLowerCase()
-          .replace(/\s+/g, "_")
-          .replace(/[^a-z0-9_]/g, "");
-            
+        
         json_community.features.push(feature);
             
         layer_community.getSource().addFeature(
