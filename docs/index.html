@@ -275,14 +275,12 @@ console.log("ADMIN CHECK:", window.location.search);
 
   if (!btn) return;
 
-  if (locked) {
-    btn.textContent = "🔒 Vast";
-    btn.style.background = "red";
-  } else {
-    btn.textContent = "🔓 Vrij";
-    btn.style.background = "green";
-  }
-}
+if (locked) {
+  map.removeInteraction(modify);
+  console.log("LOCK AAN");
+  alert("🔒 Lock actief");
+
+  resetForm();   // 👈 toevoegen
 
   updateLockUI();
     
