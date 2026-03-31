@@ -169,8 +169,7 @@ const olFeature = new ol.format.GeoJSON().readFeature(feature, {
 olFeature.set('id', id);
 
 layer_community.getSource().addFeature(olFeature);
-          }) // new 
-          );  //layer
+        
 
         // 👉 lokaal opslaan
         localStorage.setItem('community_data', JSON.stringify(json_community));
