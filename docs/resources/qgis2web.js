@@ -6,10 +6,10 @@ var map = new ol.Map({
     view: new ol.View({
          maxZoom: 28, minZoom: 1
     })
-}); 
+});
 
 //initial view - epsg:3857 coordinates if not "Match project CRS"
-map.getView().fit([443936.089340, 6744272.011302, 965519.136215, 7013502.089427], map.getSize());
+map.getView().fit([306641.069445, 6541278.835677, 867915.618013, 6924616.193008], map.getSize());
 
 //full zooms only
 map.getView().setProperties({constrainResolution: true});
@@ -151,31 +151,49 @@ var doHighlight = false;
 var doHover = false;
 
 function createPopupField(currentFeature, currentFeatureKeys, layer) {
-
     var popupText = '';
-
     for (var i = 0; i < currentFeatureKeys.length; i++) {
-
-        var key = currentFeatureKeys[i];
-
-        if (key != 'geometry' && key != 'layerObject' && key != 'idO') {
-
-            var val = currentFeature.get(key);
-
-            if (val === null || val === undefined || val === '') {
+        if (currentFeatureKeys[i] != 'geometry' && currentFeatureKeys[i] != 'layerObject' && currentFeatureKeys[i] != 'idO') {
+            var popupField = '';
+            if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "hidden field") {
                 continue;
+            } else if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label - visible with data") {
+                if (currentFeature.get(currentFeatureKeys[i]) == null) {
+                    continue;
+                }
             }
-
-            var label = layer.get('fieldAliases')[key] || key;
-
-            var popupField = '<th>' + label + '</th><td>';
-            popupField += autolinker.link(val.toLocaleString()) + '</td>';
-
+            if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label - always visible" ||
+                layer.get('fieldLabels')[currentFeatureKeys[i]] == "inline label - visible with data") {
+                popupField += '<th>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + '</th><td>';
+            } else {
+                popupField += '<td colspan="2">';
+            }
+            if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label - visible with data") {
+                if (currentFeature.get(currentFeatureKeys[i]) == null) {
+                    continue;
+                }
+            }
+            if (layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label - always visible" ||
+                layer.get('fieldLabels')[currentFeatureKeys[i]] == "header label - visible with data") {
+                popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + '</strong><br />';
+            }
+            if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
+				popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? autolinker.link(currentFeature.get(currentFeatureKeys[i]).toLocaleString()) + '</td>' : '');
+			} else {
+				var fieldValue = currentFeature.get(currentFeatureKeys[i]);
+				if (/\.(gif|jpg|jpeg|tif|tiff|png|avif|webp|svg)$/i.test(fieldValue)) {
+					popupField += (fieldValue != null ? '<img src="images/' + fieldValue.replace(/[\\\/:]/g, '_').trim() + '" /></td>' : '');
+				} else if (/\.(mp4|webm|ogg|avi|mov|flv)$/i.test(fieldValue)) {
+					popupField += (fieldValue != null ? '<video controls><source src="images/' + fieldValue.replace(/[\\\/:]/g, '_').trim() + '" type="video/mp4">Il tuo browser non supporta il tag video.</video></td>' : '');
+				} else if (/\.(mp3|wav|ogg|aac|flac)$/i.test(fieldValue)) {
+                    popupField += (fieldValue != null ? '<audio controls><source src="images/' + fieldValue.replace(/[\\\/:]/g, '_').trim() + '" type="audio/mpeg">Il tuo browser non supporta il tag audio.</audio></td>' : '');
+                } else {
+					popupField += (fieldValue != null ? autolinker.link(fieldValue.toLocaleString()) + '</td>' : '');
+				}
+			}
             popupText += '<tr>' + popupField + '</tr>';
         }
     }
-	popupText = popupText.replace(/undefined/g, '');
-	popupText = popupText.replace(/null/g, '');
     return popupText;
 }
 
@@ -226,13 +244,7 @@ function onPointerMove(evt) {
                     currentFeatureKeys = currentFeature.getKeys();
                     popupText += '<li><table>'
                     popupText += '<a>' + '<b>' + layer.get('popuplayertitle') + '</b>' + '</a>';
-                  var content = createPopupField(currentFeature, currentFeatureKeys, layer);
-
-				// verwijder ALLE vormen van undefined
-					content = content.replace(/undefined/g, '');
-						content = content.replace(/null/g, '');
-
-					popupText += content;
+                    popupText += createPopupField(currentFeature, currentFeatureKeys, layer);
                     popupText += '</table></li>';    
                 }
             }
@@ -241,15 +253,8 @@ function onPointerMove(evt) {
             if (doPopup) {
                 popupText += '<li><table>';
                 popupText += '<a>' + '<b>' + layer.get('popuplayertitle') + '</b>' + '</a>';
-
-				console.log(key, currentFeature.get(key));
-      //         var content = createPopupField(currentFeature, currentFeatureKeys, layer);
-		//		content = content.replace(/undefined/g, '');
-		//		popupText += content;
-
-				
+                popupText += createPopupField(currentFeature, currentFeatureKeys, layer);
                 popupText += '</table></li>';
-				
             }
         }
     }
@@ -377,22 +382,8 @@ function onSingleClickFeatures(evt) {
                         currentFeature = clusteredFeatures[n];
                         currentFeatureKeys = currentFeature.getKeys();
                         popupText += '<li><table>';
-						
-                    	 var title = layer.get('popuplayertitle');
-
-				//		if (!title) {
-    						title = 'limburg';
-				//		}
-
-popupText += '<a><b>' + title + '</b></a>';
-						
-                        var content = createPopupField(currentFeature, currentFeatureKeys, layer);
-
-					// verwijder ALLE vormen van undefined
-						content = content.replace(/undefined/g, '');
-						content = content.replace(/null/g, '');
-
-						popupText += content;
+                        popupText += '<a><b>' + layer.get('popuplayertitle') + '</b></a>';
+                        popupText += createPopupField(currentFeature, currentFeatureKeys, layer);
                         popupText += '</table></li>';    
                     }
                 }
@@ -522,7 +513,7 @@ var bottomRightContainerDiv = document.getElementById('bottom-right-container')
 //layer search
 
 
-//scalebar 
+//scalebar
 
 
 //layerswitcher
