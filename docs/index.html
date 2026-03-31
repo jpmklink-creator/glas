@@ -266,37 +266,22 @@ setTimeout(function() {
     return;
   }
 
- modify = new ol.interaction.Modify({
+  modify = new ol.interaction.Modify({
     source: layer_community.getSource()
   });
 
   var isAdmin = window.location.search.includes("admin");
-console.log("ADMIN CHECK:", window.location.search);
-  // 👉 alleen toevoegen als admin
+  console.log("ADMIN CHECK:", window.location.search);
+
   if (isAdmin) {
     map.addInteraction(modify);
-    updateLockButton();
     console.log("Modify actief (admin)");
-  } else {
-    console.log("Modify uitgeschakeld (geen admin)");
   }
-updateLockButton();
 
+  // 👉 start altijd UNLOCKED
+  locked = false;
+  updateLockButton();
 
- function updateLockUI() {
-  const btn = document.getElementById("lockBtn");
-
-  if (!btn) return;
-
-if (locked) {
-  map.removeInteraction(modify);
-  console.log("LOCK AAN");
-  alert("🔒 Lock actief");
-
-  resetForm();   // 👈 toevoegen
-
-  updateLockUI();
-    
   // 👉 coords opslaan na slepen
   modify.on('modifyend', function(e) {
     e.features.forEach(function(feature) {
@@ -317,7 +302,20 @@ if (locked) {
   });
 
 }, 1000);
-    
+
+  function updateLockButton() {
+  const btn = document.getElementById("lockBtn");
+  if (!btn) return;
+
+  if (locked) {
+    btn.textContent = "🔒 Vast";
+    btn.style.background = "red";
+  } else {
+    btn.textContent = "🔓 Vrij";
+    btn.style.background = "green";
+  }
+}
+  
 </script>
         
 <script>
@@ -376,18 +374,21 @@ window.deleteSelected = function() {
 // 🔹 lock / unlock markers
 window.toggleLock = function() {
 
-  if (!modify) {
-    console.log("modify nog niet klaar");
-    return;
-  }
+  if (!modify) return;
 
   locked = !locked;
 
   if (locked) {
-  map.removeInteraction(modify);
-  alert("🔒 Lock actief");
+    map.removeInteraction(modify);
+    alert("🔒 Lock actief");
+    resetForm();
+  } else {
+    map.addInteraction(modify);
+    alert("🔓 Unlock actief");
+  }
 
-  resetForm();
+  updateLockButton(); // 👈 ALTIJD hier
+};
   updateLockButton();   // 👈 toevoegen
 
 } else {
@@ -398,7 +399,7 @@ window.toggleLock = function() {
 }
 };
 
+    
 </script>
-
     </body>
 </html>
