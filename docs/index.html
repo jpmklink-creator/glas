@@ -427,20 +427,20 @@ function handleSelect(evt) {
 
  
   // van kaart verwijderen
-  layer_community.getSource().removeFeature(selectedFeature);
-  const id = selectedFeature.get('id');
+ // layer_community.getSource().removeFeature(selectedFeature);
+//  const id = selectedFeature.get('id');
     
-  // uit JSON verwijderen
-  json_community.features = json_community.features.filter(function(f) {
-    return f.properties.id !== id;
-  });
+//  // uit JSON verwijderen
+//  json_community.features = json_community.features.filter(function(f) {
+//    return f.properties.id !== id;
+//  });
 
   // opslaan
-  localStorage.setItem('community_data', JSON.stringify(json_community));
+//  localStorage.setItem('community_data', JSON.stringify(json_community));
 
-  selectedFeature = null;
+//  selectedFeature = null;
 
-  alert("Marker verwijderd");
+//s alert("Marker verwijderd");
 
 
 // 🔹 lock / unlock markers
