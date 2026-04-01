@@ -499,6 +499,39 @@ window.deleteSelected = function() {
 };
 </script>
 
-        
+  <script>
+
+setTimeout(function() {
+
+  if (!window.map) {
+    console.log("map nog niet klaar");
+    return;
+  }
+
+  var communitySource = new ol.source.Vector({
+    features: new ol.format.GeoJSON().readFeatures(json_community, {
+      dataProjection: 'EPSG:4326',
+      featureProjection: 'EPSG:3857'
+    })
+  });
+
+  window.layer_community = new ol.layer.Vector({
+    source: communitySource,
+    title: "Community",
+    style: new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 6,
+        fill: new ol.style.Fill({ color: 'blue' }),
+        stroke: new ol.style.Stroke({ color: 'white', width: 2 })
+      })
+    })
+  });
+
+  map.addLayer(layer_community);
+  console.log("community layer toegevoegd");
+
+}, 500);
+
+</script>      
     </body>
 </html>
