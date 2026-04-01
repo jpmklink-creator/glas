@@ -272,8 +272,8 @@ const olFeature = new ol.format.GeoJSON().readFeature(feature, {
 });
 
 // 🔥 BELANGRIJK
-olFeature.set('id', id);
 
+olFeature.set('id', feature.properties.id);
 layer_community.getSource().addFeature(olFeature);
         
 
