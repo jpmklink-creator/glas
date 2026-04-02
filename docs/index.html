@@ -499,44 +499,48 @@ setTimeout(function() {
     features: features
   });
 
- setTimeout(function() {
+    </script>
+    
+  <script>
+
+setTimeout(function() {
 
   if (!window.map) return;
 
-  var source = new ol.source.Vector({
-    features: new ol.format.GeoJSON().readFeatures(json_community, {
-      dataProjection: 'EPSG:4326',
-      featureProjection: 'EPSG:3857'
-    })
+  // 🔥 overlay globaal maken
+  window.overlay = new ol.Overlay({
+    element: document.getElementById('popup'),
+    autoPan: true
   });
 
-  // 🔥 GEEN handmatige mapping meer!
+  map.addOverlay(window.overlay);
 
-  window.layer_community = new ol.layer.Vector({
-    source: source,
-    title: "Community",
-    style: new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: 7,
-        fill: new ol.style.Fill({ color: '#007bff' }),
-        stroke: new ol.style.Stroke({ color: '#ffffff', width: 2 })
-      })
-    })
+  map.on('singleclick', function(evt) {
+
+    map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+
+      if (feature.get('name')) {
+
+        document.getElementById('popup-content').innerHTML =
+          "<b>" + feature.get('name') + "</b><br>" +
+          (feature.get('description') || "") + "<br>" +
+          (feature.get('url') || "");
+
+        // 🔥 gebruik window.overlay
+        window.overlay.setPosition(evt.coordinate);
+
+        return true;
+      }
+
+    });
+
   });
 
-  map.addLayer(layer_community);
-
-  console.log("community layer + features geladen");
-  console.log("AANTAL FEATURES:", source.getFeatures().length);
+  console.log("popup actief");
 
 }, 1000);
-    
-  map.addLayer(layer_community);
 
-  console.log("community layer + features geladen");
-  console.log("AANTAL FEATURES:", source.getFeatures().length)
-             
-}, 1000);
+</script>
 
 </script>
 
