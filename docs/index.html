@@ -342,47 +342,79 @@ window.addEventListener("load", function() {
 
 
 <script>
+<script>
+
 setTimeout(function() {
 
- if (!layer_community) return;
-  
-
-  modify = new ol.interaction.Modify({
-    source: layer_community.getSource()
-  });
-
-  var isAdmin = window.location.search.includes("admin");
-  console.log("ADMIN CHECK:", window.location.search);
-
- if (isAdmin && !locked) { 
-    map.addInteraction(modify);
-    console.log("Modify actief (admin)");
+  if (!window.map) {
+    console.log("map nog niet klaar (popup)");
+    return;
   }
 
-  // 👉 start altijd LOCKED
-  locked = true;
-  updateLockButton();
+  map.on('singleclick', function(evt) {
 
-  // 👉 coords opslaan na slepen
-  modify.on('modifyend', function(e) {
-    e.features.forEach(function(feature) {
+    map.forEachFeatureAtPixel(evt.pixel, function(feature) {
 
-      var coord = feature.getGeometry().getCoordinates();
-      var coord4326 = ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326');
+      if (feature.get('name')) {
 
-      json_community.features.forEach(function(f) {
-        if (f.properties.id === feature.get('id')) {
-          f.geometry.coordinates = coord4326;
+        var content = "<b>" + feature.get('name') + "</b><br>" +
+                      (feature.get('description') || "") + "<br>" +
+                      (feature.get('url') || "");
+
+        document.getElementById('popup-content').innerHTML = content;
+
+        if (window.overlay) {
+          overlay.setPosition(evt.coordinate);
         }
-      });
 
-      localStorage.setItem('community_data', JSON.stringify(json_community));
+        return true;
+      }
 
-      console.log("Nieuwe coord:", coord4326);
     });
+
   });
 
+  console.log("popup actief");
+
 }, 1000);
+
+</script><script>
+
+setTimeout(function() {
+
+  if (!window.map) {
+    console.log("map nog niet klaar (popup)");
+    return;
+  }
+
+  map.on('singleclick', function(evt) {
+
+    map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+
+      if (feature.get('name')) {
+
+        var content = "<b>" + feature.get('name') + "</b><br>" +
+                      (feature.get('description') || "") + "<br>" +
+                      (feature.get('url') || "");
+
+        document.getElementById('popup-content').innerHTML = content;
+
+        if (window.overlay) {
+          overlay.setPosition(evt.coordinate);
+        }
+
+        return true;
+      }
+
+    });
+
+  });
+
+  console.log("popup actief");
+
+}, 1000);
+
+
 
   function updateLockButton() {
   const btn = document.getElementById("lockBtn");
