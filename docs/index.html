@@ -470,7 +470,9 @@ window.deleteSelected = function() {
 };
 </script>
 
-  <script>
+ 
+
+<script>
 
 setTimeout(function() {
 
@@ -479,29 +481,40 @@ setTimeout(function() {
     return;
   }
 
-  var communitySource = new ol.source.Vector({
-    features: new ol.format.GeoJSON().readFeatures(json_community, {
-      dataProjection: 'EPSG:4326',
-      featureProjection: 'EPSG:3857'
-    })
+  // 🔥 GLOBAAL maken
+  window.overlay = new ol.Overlay({
+    element: document.getElementById('popup'),
+    autoPan: true
   });
 
-  window.layer_community = new ol.layer.Vector({
-    source: communitySource,
-    title: "Community",
-    style: new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: 6,
-        fill: new ol.style.Fill({ color: 'blue' }),
-        stroke: new ol.style.Stroke({ color: 'white', width: 2 })
-      })
-    })
+  map.addOverlay(window.overlay);
+
+  map.on('singleclick', function(evt) {
+
+    map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+
+      if (feature.get('name')) {
+
+        var content = "<b>" + feature.get('name') + "</b><br>" +
+                      (feature.get('description') || "") + "<br>" +
+                      (feature.get('url') || "");
+
+        document.getElementById('popup-content').innerHTML = content;
+
+        // 🔥 NU werkt dit
+        window.overlay.setPosition(evt.coordinate);
+
+        return true;
+      }
+
+    });
+
   });
 
-  map.addLayer(layer_community);
-  console.log("community layer toegevoegd");
+  console.log("popup werkt nu");
 
-}, 500);
+}, 1000);
+
 
 </script>  
 
