@@ -441,7 +441,7 @@ window.deleteSelected = function() {
 
 setTimeout(function() {
 
-  if (!window.map) return;
+ if (!window.map || !window.layer_community) return;
 
   // 🔥 overlay globaal maken
   window.overlay = new ol.Overlay({
