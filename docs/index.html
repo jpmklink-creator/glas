@@ -475,7 +475,12 @@ setTimeout(function() {
   console.log("popup actief");
 
 }, 1000);
-
+    
+document.getElementById('popup-closer').onclick = function() {
+  document.getElementById('popup').style.display = 'none';
+  window.overlay.setPosition(undefined);
+  return false;
+};
 </script>
         
     </body>
