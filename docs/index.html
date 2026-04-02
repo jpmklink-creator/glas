@@ -85,6 +85,7 @@
             </div>
         </div>
 
+<script>
 function resetForm() {
   document.getElementById('plaats').value = "";
   document.getElementById('straat').value = "";
@@ -96,7 +97,6 @@ function resetForm() {
 
 function updateLockButton() {
   const btn = document.getElementById("lockBtn");
-
   if (!btn) return;
 
   if (locked) {
@@ -107,6 +107,7 @@ function updateLockButton() {
     btn.style.background = "green";
   }
 }
+</script>
         
         <script src="resources/qgis2web_expressions.js"></script>
         <script src="./resources/functions.js"></script>
