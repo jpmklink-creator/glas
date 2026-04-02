@@ -410,6 +410,10 @@ var locked = false;
 map.on('singleclick', handleSelect);
 //map.on('pointerup', handleSelect);
 
+map.on('singleclick', function(evt) {
+  console.log("POPUP CLICK TEST");
+});
+    
 function handleSelect(evt) {
 
   selectedFeature = null;
