@@ -182,7 +182,7 @@ var layer_community = new ol.layer.Vector({
 
 setTimeout(function() {
 
-  if (!window.map) return;
+    if (!window.map || !window.layer_community) return;
 
   var source = new ol.source.Vector({
     features: new ol.format.GeoJSON().readFeatures(json_community, {
