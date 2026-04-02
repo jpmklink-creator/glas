@@ -100,10 +100,10 @@ function updateLockButton() {
   if (!btn) return;
 
   if (locked) {
-    btn.textContent = "🔒 Vast";
+    btn.textContent = "Vast";
     btn.style.background = "red";
   } else {
-    btn.textContent = "🔓 Vrij";
+    btn.textContent = "Vrij";
     btn.style.background = "green";
   }
 }
@@ -165,7 +165,7 @@ var layer_community = new ol.layer.Vector({
   style: new ol.style.Style({
     image: new ol.style.Circle({
       radius: 6,
-      fill: new ol.style.Fill({ color: 'blue' }),
+      fill: new ol.style.Fill({ color: 'black' }),
       stroke: new ol.style.Stroke({ color: 'white', width: 2 })
     })
   })
@@ -247,7 +247,7 @@ setTimeout(function() {
             "properties": {
                   "id": id,
                   "name": naam,
-                  "url": `<a href="${link}" target="_blank">🔗 Website</a>`,
+                  "url": `<a href="${link}" target="_blank">Website</a>`,
                   "description": `${straat} ${huisnummer}, ${postcode} ${plaats}`
             },  // prop
               "geometry": {
@@ -346,10 +346,10 @@ window.addEventListener("load", function() {
   if (!btn) return;
 
   if (locked) {
-    btn.textContent = "🔒 Vast";
+    btn.textContent = "Vast";
     btn.style.background = "red";
   } else {
-    btn.textContent = "🔓 Vrij";
+    btn.textContent = "Vrij";
     btn.style.background = "green";
   }
 }
@@ -394,11 +394,11 @@ window.toggleLock = function() {
 
   if (locked) {
     map.removeInteraction(modify);
-    alert("🔒 Lock actief");
+    alert("Lock actief");
     resetForm();
   } else {
     map.addInteraction(modify);
-    alert("🔓 Unlock actief");
+    alert("Unlock actief");
   }
 
   updateLockButton();
