@@ -455,7 +455,7 @@ setTimeout(function() {
 
     map.forEachFeatureAtPixel(evt.pixel, function(feature) {
 
-      if (feature) {
+     if (feature.get('description')) {
 
         const name = feature.get('name') || feature.get('id') || "Onbekend";
 const desc = feature.get('description') || "";
