@@ -376,7 +376,25 @@ function handleSelect(evt) {
       selectedFeature = feature;
 
       console.log("SELECTED:", feature.get('id'));
+document.getElementById('naam').value = feature.get('name') || "";
 
+// description splitsen
+const desc = feature.get('description') || "";
+const parts = desc.split(',');
+
+if (parts.length >= 2) {
+  const straatdeel = parts[0].trim().split(' ');
+
+  document.getElementById('straat').value = straatdeel.slice(0, -1).join(' ');
+  document.getElementById('huisnummer').value = straatdeel.slice(-1).join('');
+
+  const pc_plaats = parts[1].trim().split(' ');
+  document.getElementById('postcode').value = pc_plaats[0] || "";
+  document.getElementById('plaats').value = pc_plaats.slice(1).join(' ');
+}
+
+// link (optioneel simpel)
+document.getElementById('link').value = "";
       return false; // 👈 BELANGRIJK
     }
 
