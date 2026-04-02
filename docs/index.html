@@ -394,24 +394,8 @@ function handleSelect(evt) {
 
 }
  
-  // van kaart verwijderen
- // layer_community.getSource().removeFeature(selectedFeature);
-//  const id = selectedFeature.get('id');
-    
-//  // uit JSON verwijderen
-//  json_community.features = json_community.features.filter(function(f) {
-//    return f.properties.id !== id;
-//  });
-
-  // opslaan
-//  localStorage.setItem('community_data', JSON.stringify(json_community));
-
-//  selectedFeature = null;
-
-//s alert("Marker verwijderd");
 
 
-// 🔹 lock / unlock markers
 window.toggleLock = function() {
 
   if (!modify) return;
@@ -427,13 +411,8 @@ window.toggleLock = function() {
     alert("🔓 Unlock actief");
   }
 
-  updateLockButton(); // 👈 ALTIJD hier
-    
-  map.addInteraction(modify);
-  alert("🔓 Unlock actief");
+  updateLockButton();
 };
-
-
     
 </script>
         <script>
