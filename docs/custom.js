@@ -10,10 +10,7 @@ window.addEventListener("load", function () {
 
         '<div class="info-content">' +
 
-    //    '<div class="tabs">' +
-  //      '<button class="tab active" data-tab="info">Info</button>' +
-     //   '<button class="tab" data-tab="bron">Bron</button>' +
-     //   '</div>' +
+ 
 
         '<div class="tab-content active" id="info">' +
         'Deze kaart toont monumentaal glas in Nederland.<br><br>' +
