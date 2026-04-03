@@ -1,24 +1,20 @@
 window.addEventListener("load", function () {
 
-    let interval = setInterval(function () {
+    let mapDiv = document.getElementById("map");
 
-        // pak de kaartcontainer (werkt altijd)
-        let mapDiv = document.querySelector("#map");
+    if (!mapDiv) {
+        alert("map niet gevonden");
+        return;
+    }
 
-        if (mapDiv) {
-            clearInterval(interval);
+    let div = document.createElement("div");
+    div.className = "info-panel";
 
-            let div = document.createElement("div");
-            div.className = "info-panel";
+    div.innerHTML =
+        '<div class="info-header">ℹ️ Toelichting</div>' +
+        '<div class="info-content">Dit is een testtekst.</div>';
 
-            div.innerHTML =
-                '<div class="info-header">ℹ️ Toelichting</div>' +
-                '<div class="info-content">Dit is een testtekst.</div>';
-
-            mapDiv.appendChild(div);
-        }
-
-    }, 500);
+    mapDiv.appendChild(div);
 });
 
 
