@@ -2,27 +2,60 @@ window.addEventListener("load", function () {
 
     let mapDiv = document.getElementById("map");
 
-    if (!mapDiv) {
-        alert("map niet gevonden");
-        return;
-    }
-
     let div = document.createElement("div");
     div.className = "info-panel";
 
     div.innerHTML =
-        '<div class="info-header">ℹ️ Toelichting</div>' +
-        '<div class="info-content">Dit is een testtekst.</div>';
+        '<div class="info-header"><span class="arrow">▶</span> Over deze kaart</div>' +
+
+        '<div class="info-content">' +
+
+        '<div class="tabs">' +
+        '<button class="tab active" data-tab="info">Info</button>' +
+        '<button class="tab" data-tab="bron">Bron</button>' +
+        '</div>' +
+
+        '<div class="tab-content active" id="info">' +
+        'Deze kaart toont glas-in-lood ramen in Nederland.<br><br>' +
+        'Gebruik de legenda om lagen aan/uit te zetten.' +
+        '</div>' +
+
+        '<div class="tab-content" id="bron">' +
+        'Bronnen:<br>' +
+        '- Eigen inventarisatie<br>' +
+        '- Monumentenregister' +
+        '</div>' +
+
+        '</div>';
 
     mapDiv.appendChild(div);
 });
 
 
-// toggle
+// 🔽 inklappen + pijltje draaien
 document.addEventListener("click", function(e) {
-    if (e.target.classList.contains("info-header")) {
-        const content = e.target.nextElementSibling;
-        content.style.display =
-            content.style.display === "none" ? "block" : "none";
+
+    if (e.target.closest(".info-header")) {
+        let header = e.target.closest(".info-header");
+        let content = header.nextElementSibling;
+        let arrow = header.querySelector(".arrow");
+
+        let open = content.style.display === "block";
+
+        content.style.display = open ? "none" : "block";
+        arrow.textContent = open ? "▶" : "▼";
+    }
+
+    // tabs
+    if (e.target.classList.contains("tab")) {
+
+        let tabs = document.querySelectorAll(".tab");
+        let contents = document.querySelectorAll(".tab-content");
+
+        tabs.forEach(t => t.classList.remove("active"));
+        contents.forEach(c => c.classList.remove("active"));
+
+        e.target.classList.add("active");
+        document.getElementById(e.target.dataset.tab).classList.add("active");
     }
 });
