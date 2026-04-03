@@ -2,7 +2,7 @@ function waitForMapAndAddControl() {
     if (typeof map !== "undefined") {
         // control toevoegen
         var infoControl = L.control({ position: 'topleft' });
-
+console.log("custom.js geladen");
         infoControl.onAdd = function () {
             var div = L.DomUtil.create('div', 'info-panel');
 
