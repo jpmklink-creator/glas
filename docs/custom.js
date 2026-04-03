@@ -2,19 +2,20 @@ window.addEventListener("load", function () {
 
     let interval = setInterval(function () {
 
-        let topLeft = document.querySelector(".leaflet-top.leaflet-left");
+        // pak de kaartcontainer (werkt altijd)
+        let mapDiv = document.querySelector("#map");
 
-        if (topLeft) {
+        if (mapDiv) {
             clearInterval(interval);
 
             let div = document.createElement("div");
-            div.className = "leaflet-control info-panel";
+            div.className = "info-panel";
 
             div.innerHTML =
                 '<div class="info-header">ℹ️ Toelichting</div>' +
                 '<div class="info-content">Dit is een testtekst.</div>';
 
-            topLeft.appendChild(div);
+            mapDiv.appendChild(div);
         }
 
     }, 500);
