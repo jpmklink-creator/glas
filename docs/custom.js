@@ -1,5 +1,5 @@
 window.addEventListener("load", function () {
-
+alert("custom.js werkt");
     function findMap() {
         for (let key in window) {
             if (window[key] instanceof L.Map) {
