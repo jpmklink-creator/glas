@@ -1,8 +1,29 @@
-function waitForMapAndAddControl() {
-    if (typeof map !== "undefined") {
-        // control toevoegen
+window.addEventListener("load", function () {
+
+    function findMap() {
+        for (let key in window) {
+            if (window[key] instanceof L.Map) {
+                return window[key];
+            }
+        }
+        return null;
+    }
+
+    function init() {
+        if (typeof L === "undefined") {
+            setTimeout(init, 200);
+            return;
+        }
+
+        let mapInstance = findMap();
+
+        if (!mapInstance) {
+            setTimeout(init, 200);
+            return;
+        }
+
         var infoControl = L.control({ position: 'topleft' });
-console.log("custom.js geladen");
+
         infoControl.onAdd = function () {
             var div = L.DomUtil.create('div', 'info-panel');
 
@@ -17,19 +38,15 @@ console.log("custom.js geladen");
             return div;
         };
 
-        infoControl.addTo(map);
-
-    } else {
-        // opnieuw proberen tot map bestaat
-        setTimeout(waitForMapAndAddControl, 200);
+        infoControl.addTo(mapInstance);
     }
-}
 
-// starten
-waitForMapAndAddControl();
+    init();
+
+});
 
 
-// toggle gedrag
+// toggle blijft buiten load
 document.addEventListener("click", function(e) {
     if (e.target.classList.contains("info-header")) {
         const content = e.target.nextElementSibling;
