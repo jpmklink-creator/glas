@@ -19,8 +19,9 @@ window.addEventListener("load", function () {
         div.innerHTML =
             '<div class="info-header">▶ Over deze kaart</div>' +
             '<div class="info-content">' +
+            'zoek op plaats'+
             '<input type="text" id="searchBox" placeholder="Zoek plaats..." />' +
-            'Klik op een marker dan komt een popup met een link'+
+            'Klik op een marker dan komt een popup met een link '+
             'naar informatie <br><br>' +
            
             '</div>';
