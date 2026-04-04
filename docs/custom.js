@@ -1,5 +1,5 @@
 window.addEventListener("load", function () {
-
+console.log("custom geladen:", new Date());
     let mapDiv = document.getElementById("map");
 
     let div = document.createElement("div");
