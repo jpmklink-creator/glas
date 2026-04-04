@@ -2,10 +2,12 @@ window.addEventListener("load", function () {
 console.log("custom geladen:", new Date());
     let mapDiv = document.getElementById("map");
 
+
     let div = document.createElement("div");
     div.className = "info-panel";
 
     div.innerHTML =
+       
         '<div class="info-header"><span class="arrow">▶</span> Over deze kaart</div>' +
 
         '<div class="info-content">' +
@@ -16,13 +18,10 @@ console.log("custom geladen:", new Date());
         'Deze kaart toont monumentaal glas in Nederland.<br><br>' +
         'klik op een marker bij een gebouw en er verschijnt een <br> ' +
         'popup met link naar op internet aanwezige informatie' +
-        '</div>' 
-    
-        '<div class="tab-content" id="bron">' +
-        'Bronnen:<br>' +
-        '- Eigen inventarisatie<br>' +
-        '- Monumentenregister' +
         '</div>' +
+     / 🔍 zoekveld
+         '<input type="text" id="searchBox" placeholder="Zoek plaats..." />' +
+        
 
         '</div>';
 
