@@ -27,7 +27,13 @@ console.log("custom geladen:", new Date());
 
     mapDiv.appendChild(div);
 });
-
+window.addEventListener("load", function () {
+    for (let key in window) {
+        if (window[key] instanceof L.Map) {
+            window[key].setView([52.1, 5.1], 8);
+        }
+    }
+});
 
 // 🔽 inklappen + pijltje draaien
 document.addEventListener("click", function(e) {
