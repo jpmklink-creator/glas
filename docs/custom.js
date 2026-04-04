@@ -19,8 +19,10 @@ window.addEventListener("load", function () {
         div.innerHTML =
             '<div class="info-header">▶ Over deze kaart</div>' +
             '<div class="info-content">' +
-            'Dit is een testtekst.<br><br>' +
-            'Hier komt jouw uitleg.' +
+            '<input type="text" id="searchBox" placeholder="Zoek plaats..." />' +
+            'Klik op een marker dan komt een popup met een link'+
+            'naar informatie <br><br>' +
+           
             '</div>';
 
         mapDiv.appendChild(div);
