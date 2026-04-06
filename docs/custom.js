@@ -1,3 +1,6 @@
+console.log("CUSTOM WORDT GELADEN");
+alert("CUSTOM ACTIEF");
+
 // wacht tot pagina klaar is
 window.addEventListener("load", function () {
 
