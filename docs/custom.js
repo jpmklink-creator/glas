@@ -1,161 +1,43 @@
-console.log("CUSTOM WORDT GELADEN");
-alert("CUSTOM ACTIEF");
-
-// wacht tot pagina klaar is
+// wacht tot alles geladen is
 window.addEventListener("load", function () {
 
-    function addPanel() {
+    let mapDiv = document.getElementById("map");
+    if (!mapDiv) return;
 
-        let mapDiv = document.getElementById("map");
+    // voorkom dubbel toevoegen
+    if (document.querySelector(".info-panel")) return;
 
-        if (!mapDiv) {
-            setTimeout(addPanel, 300);
-            return;
-        }
+    let div = document.createElement("div");
+    div.className = "info-panel";
 
-        // voorkom dubbel
-        if (document.querySelector(".info-panel")) return;
-
-        let div = document.createElement("div");
-        div.className = "info-panel";
-
-       
-            div.innerHTML = `
-    <div class="info-header">▶ Over deze kaart</div>
-    <div class="info-content">
-        <div>Zoek op plaats:</div>
-        <input type="text" id="searchBox" placeholder="Zoek plaats..." />
-        
-        <div style="margin-top:8px;">
-            Klik op een marker, dan verschijnt een popup met een link naar informatie.
+    div.innerHTML = `
+        <div class="info-header">▶ Over deze kaart</div>
+        <div class="info-content">
+            <div>Zoek op plaats:</div>
+            <input type="text" id="searchBox" placeholder="Zoek plaats..." />
+            
+            <div style="margin-top:8px;">
+                Klik op een marker, dan verschijnt een popup met een link naar informatie.
+            </div>
         </div>
-    </div>
-`;
-        mapDiv.appendChild(div);
+    `;
 
-        console.log("infoblok geplaatst ");
-    }
-
-    addPanel();
+    mapDiv.appendChild(div);
 });
 
 
-// inklappen
+// 🔥 BETROUWBARE klik-handler (dit was je probleem)
 document.addEventListener("click", function(e) {
-    if (e.target.classList.contains("info-header")) {
 
-        let header = e.target;
+    let header = e.target.closest(".info-header");
+
+    if (header) {
         let content = header.nextElementSibling;
 
         let open = content.style.display === "block";
 
         content.style.display = open ? "none" : "block";
-        header.textContent = (open ? "▶ " : "▼ ") + "Over deze kaart";
-    }
-});
 
-document.addEventListener("keydown", function(e) {
-
-    if (e.target.id === "searchBox" && e.key === "Enter") {
-
-        let query = e.target.value;
-
-        fetch("https://nominatim.openstreetmap.org/search?format=json&q=" + query)
-            .then(r => r.json())
-            .then(data => {
-
-                if (data.length > 0) {
-
-                    let lat = parseFloat(data[0].lat);
-                    let lon = parseFloat(data[0].lon);
-
-                    // OpenLayers kaart (jouw geval!)
-                    if (window.map) {
-                        map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
-                        map.getView().setZoom(13);
-                    }
-
-                } else {
-                    alert("Plaats niet gevonden");
-                }
-            });
-    }
-});
-// wacht tot pagina klaar is
-window.addEventListener("load", function () {
-
-    function addPanel() {
-
-        let mapDiv = document.getElementById("map");
-
-        if (!mapDiv) {
-            setTimeout(addPanel, 300);
-            return;
-        }
-
-        // voorkom dubbel
-        if (document.querySelector(".info-panel")) return;
-
-        let div = document.createElement("div");
-        div.className = "info-panel";
-
-        div.innerHTML =
-            '<div class="info-header">▶ Over deze kaart</div>' +
-            '<div class="info-content">' +
-            'zoek op plaats'+
-            '<input type="text" id="searchBox" placeholder="Zoek plaats..." />' +
-            'Klik op een marker dan komt een popup met een link '+
-            'naar informatie <br><br>' +
-           
-            '</div>';
-
-        mapDiv.appendChild(div);
-
-        console.log("infoblok geplaatst ");
-    }
-
-    addPanel();
-});
-
-
-// inklappen
-document.addEventListener("click", function(e) {
-    if (e.target.classList.contains("info-header")) {
-
-        let header = e.target;
-        let content = header.nextElementSibling;
-
-        let open = content.style.display === "block";
-
-        content.style.display = open ? "none" : "block";
-        header.textContent = (open ? "▶ " : "▼ ") + "Over deze kaart";
-    }
-});
-
-document.addEventListener("keydown", function(e) {
-
-    if (e.target.id === "searchBox" && e.key === "Enter") {
-
-        let query = e.target.value;
-
-        fetch("https://nominatim.openstreetmap.org/search?format=json&q=" + query)
-            .then(r => r.json())
-            .then(data => {
-
-                if (data.length > 0) {
-
-                    let lat = parseFloat(data[0].lat);
-                    let lon = parseFloat(data[0].lon);
-
-                    // OpenLayers kaart (jouw geval!)
-                    if (window.map) {
-                        map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
-                        map.getView().setZoom(13);
-                    }
-
-                } else {
-                    alert("Plaats niet gevonden");
-                }
-            });
+        header.innerHTML = (open ? "▶ " : "▼ ") + "Over deze kaart";
     }
 });
