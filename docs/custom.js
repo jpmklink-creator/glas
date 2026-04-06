@@ -54,8 +54,8 @@ window.addEventListener("load", function () {
 
     // 🌍 startpositie Nederland
     if (window.map) {
-        map.getView().setCenter(ol.proj.fromLonLat([5.4, 52.15));
-        map.getView().setZoom(8);
+       map.getView().setCenter(ol.proj.fromLonLat([5.4, 52.15]));
+       map.getView().setZoom(8);
     }
 });
 
