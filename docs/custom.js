@@ -200,7 +200,7 @@ function findFeature() {
     } else {
         setTimeout(findFeature, 300);
     }
-}
+
                         
                         
 // popup ophalen
