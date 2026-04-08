@@ -79,13 +79,13 @@ window.addEventListener("load", function init() {
 
     });
 
-    // ---------- openen via ID ----------
+    // ---------- openen via URL ----------
     openFromId();
 
 });
 
 
-// ---------- openen via ID + layer ----------
+// ---------- openen via ID ----------
 function openFromId() {
 
     let params = new URLSearchParams(window.location.search);
@@ -94,77 +94,43 @@ function openFromId() {
 
     if (!id) return;
 
-   function findFeature() {
+    function findFeature() {
 
-    if (!window.layersList) {
-        setTimeout(findFeature, 300);
-        return;
-    }
+        if (!window.layersList) {
+            setTimeout(findFeature, 300);
+            return;
+        }
 
-    let found = null;
-
-    layersList.forEach(function(layer) {
-
-        if (!layer.getSource) return;
-
-        let source = layer.getSource();
-
-        // alleen vector layers
-        if (!source.getFeatures) return;
-
-        source.getFeatures().forEach(function(f) {
-
-            // check normale feature
-            if (f.get("id") == id) {
-                found = f;
-            }
-
-            // check cluster (belangrijk bij qgis2web!)
-            if (f.get("features")) {
-                f.get("features").forEach(function(innerFeature) {
-                    if (innerFeature.get("id") == id) {
-                        found = innerFeature;
-                    }
-                });
-            }
-
-        });
-
-    });
-
-    if (found) {
-        console.log("Feature gevonden:", found);
-    } else {
-        setTimeout(findFeature, 300);
-    }
-}
         let found = null;
 
         layersList.forEach(function(layer) {
-       
-           if (!layer.getSource) return;
 
-           let source = layer.getSource();
+            if (!layer.getSource) return;
 
-        // alleen vector layers hebben features
-           if (!source.getFeatures) return;
+            let source = layer.getSource();
 
-         let features = source.getFeatures();
+            if (!source.getFeatures) return;
 
-          if (features.includes(lastClickedFeature)) {
-            layerName = layer.get("title");
-            }
+            // optioneel filter op layer
+            if (layerName && layer.get("title") !== layerName) return;
 
-           });
+            source.getFeatures().forEach(function(f) {
 
-                layer.getSource().getFeatures().forEach(function(f) {
+                if (f.get("id") == id) {
+                    found = f;
+                }
 
-                    if (f.get("id") == id) {
-                        found = f;
-                    }
+                // cluster support
+                if (f.get("features")) {
+                    f.get("features").forEach(function(inner) {
+                        if (inner.get("id") == id) {
+                            found = inner;
+                        }
+                    });
+                }
 
-                });
-            
+            });
+
         });
 
         if (found) {
@@ -174,24 +140,20 @@ function openFromId() {
             map.getView().setCenter(coord);
             map.getView().setZoom(16);
 
-            lastClickedFeature = found;
+            // simulate click (BELANGRIJK)
+            let pixel = map.getPixelFromCoordinate(coord);
 
-// simulate click via pixel
-let pixel = map.getPixelFromCoordinate(coord);
+            map.dispatchEvent({
+                type: "singleclick",
+                coordinate: coord,
+                pixel: pixel
+            });
 
-map.forEachFeatureAtPixel(pixel, function(feature) {
-    if (feature === found) {
-        // trigger normale popup flow
-        map.dispatchEvent({
-            type: "singleclick",
-            coordinate: coord,
-            pixel: pixel
-        });
-    }
-});
-
-// share knop opnieuw toevoegen
-setTimeout(addShareButtonToPopup, 300);
+            // fix feature + knop NA popup render
+            setTimeout(function() {
+                lastClickedFeature = found;
+                addShareButtonToPopup();
+            }, 300);
 
         } else {
             setTimeout(findFeature, 300);
@@ -219,14 +181,27 @@ function addShareButtonToPopup() {
 
         let id = lastClickedFeature.get("id");
 
-        // laag bepalen
         let layerName = "";
 
         layersList.forEach(function(layer) {
-            let features = layer.getSource().getFeatures();
-            if (features.includes(lastClickedFeature)) {
-                layerName = layer.get("title");
-            }
+
+            if (!layer.getSource) return;
+
+            let source = layer.getSource();
+            if (!source.getFeatures) return;
+
+            source.getFeatures().forEach(function(f) {
+
+                if (f === lastClickedFeature) {
+                    layerName = layer.get("title");
+                }
+
+                if (f.get("features") && f.get("features").includes(lastClickedFeature)) {
+                    layerName = layer.get("title");
+                }
+
+            });
+
         });
 
         let url = window.location.origin + window.location.pathname +
