@@ -38,9 +38,13 @@ window.addEventListener("load", function () {
 
 
     // ---------- 🌍 startpositie ----------
-    let lat = getParam("lat");
-    let lon = getParam("lon");
-    let zoom = getParam("zoom");
+   let params = new URLSearchParams(window.location.search);
+
+let lat = params.get("lat");
+let lon = params.get("lon");
+let zoom = params.get("zoom");
+
+console.log("PARAMS:", lat, lon, zoom);
 
     if (lat && lon) {
 
