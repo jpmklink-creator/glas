@@ -175,10 +175,7 @@ if (overlay && content) {
     // knop toevoegen NA render
     setTimeout(addShareButtonToPopup, 200);
 }
-        } else {
-            setTimeout(findFeature, 300);
-        }
-    }
+       
 
     findFeature();
 }
