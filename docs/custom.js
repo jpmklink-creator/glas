@@ -11,31 +11,60 @@ window.addEventListener("load", function () {
     let mapDiv = document.getElementById("map");
     if (!mapDiv) return;
 
-    // ---------- 📦 infoblok ----------
-    if (!document.querySelector(".info-panel")) {
+  // ---------- 📍 openen via link ----------
+let lat = getParam("lat");
+let lon = getParam("lon");
+let zoom = getParam("zoom");
 
-        let div = document.createElement("div");
-        div.className = "info-panel";
+if (lat && lon && window.map && window.layersList) {
 
-        div.innerHTML = `
-            <div class="info-header">▼ Over deze kaart</div>
-            <div class="info-content" style="display:block;">
-                <div>Zoek op plaats:</div>
-                <input type="text" id="searchBox" placeholder="Zoek plaats..." />
-                
-                <button id="copyLinkBtn" style="margin-top:8px;">
-                    📋 Deel huidige kaart
-                </button>
+    let target = ol.proj.fromLonLat([parseFloat(lon), parseFloat(lat)]);
+    let foundFeature = null;
 
-                <div style="margin-top:8px;">
-                    Klik op een marker voor info.
-                </div>
-            </div>
-        `;
+    // zoek feature in alle lagen
+    layersList.forEach(function(layer) {
+        if (layer.getSource && layer.getSource().getFeatures) {
 
-        mapDiv.appendChild(div);
+            let features = layer.getSource().getFeatures();
+
+            features.forEach(function(f) {
+                let geom = f.getGeometry();
+                if (geom && geom.getType() === "Point") {
+
+                    let coord = geom.getCoordinates();
+
+                    let dist = ol.sphere.getDistance(
+                        ol.proj.toLonLat(coord),
+                        [parseFloat(lon), parseFloat(lat)]
+                    );
+
+                    // binnen ~50 meter
+                    if (dist < 50) {
+                        foundFeature = f;
+                    }
+                }
+            });
+        }
+    });
+
+    if (foundFeature) {
+
+        let coord = foundFeature.getGeometry().getCoordinates();
+
+        map.getView().setCenter(coord);
+        map.getView().setZoom(zoom ? parseInt(zoom) : 16);
+
+        // 🔥 popup openen (qgis2web standaard)
+        if (typeof highlightFeature === "function") {
+            highlightFeature(foundFeature);
+        }
+
+    } else {
+        // fallback
+        map.getView().setCenter(target);
+        map.getView().setZoom(zoom ? parseInt(zoom) : 14);
     }
-
+}
 
     // ---------- 🔍 zoekfunctie ----------
     document.getElementById("searchBox").addEventListener("keydown", function(e) {
