@@ -177,6 +177,7 @@ function findFeature() {
     }
 }
                         
+                        
 // popup ophalen
 lastClickedFeature = found;
 
