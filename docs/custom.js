@@ -96,43 +96,57 @@ function openFromId() {
 
     function findFeature() {
 
-        if (!window.layersList) {
-            setTimeout(findFeature, 300);
-            return;
-        }
+    if (!window.layersList) {
+        setTimeout(findFeature, 300);
+        return;
+    }
 
-        let found = null;
+    let found = null;
 
-        layersList.forEach(function(layer) {
+    layersList.forEach(function(layer) {
 
-            if (!layer.getSource) return;
+        if (!layer.getSource) return;
 
-            let source = layer.getSource();
+        let source = layer.getSource();
+        if (!source.getFeatures) return;
 
-            if (!source.getFeatures) return;
+        // 🔴 HIER zit de echte fix
+        if (layerName && layer.get("title") !== layerName) return;
 
-            // optioneel filter op layer
-            if (layerName && layer.get("title") !== layerName) return;
+        source.getFeatures().forEach(function(f) {
 
-            source.getFeatures().forEach(function(f) {
+            // normale feature
+            if (f.get("id") == id) {
+                found = f;
+            }
 
-                if (f.get("id") == id) {
-                    found = f;
-                }
-
-                // cluster support
-                if (f.get("features")) {
-                    f.get("features").forEach(function(inner) {
-                        if (inner.get("id") == id) {
-                            found = inner;
-                        }
-                    });
-                }
-
-            });
+            // cluster support
+            if (f.get("features")) {
+                f.get("features").forEach(function(inner) {
+                    if (inner.get("id") == id) {
+                        found = inner;
+                    }
+                });
+            }
 
         });
 
+    });
+
+    if (found) {
+
+        let coord = found.getGeometry().getCoordinates();
+
+        map.getView().setCenter(coord);
+        map.getView().setZoom(16);
+
+        // popup handmatig openen
+        openPopup(found, coord);
+
+    } else {
+        setTimeout(findFeature, 300);
+    }
+}
         if (found) {
 
             let coord = found.getGeometry().getCoordinates();
