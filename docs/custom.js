@@ -125,6 +125,33 @@ function openFromId() {
             if (f.get("features")) {
                 f.get("features").forEach(function(inner) {
                     if (inner.get("id") == id) {
+  function findFeature() {
+
+    if (!window.layersList) {
+        setTimeout(findFeature, 300);
+        return;
+    }
+
+    let found = null;
+
+    layersList.forEach(function(layer) {
+
+        if (!layer.getSource) return;
+
+        let source = layer.getSource();
+        if (!source.getFeatures) return;
+
+        if (layerName && !layer.get("title").includes(layerName)) return;
+
+        source.getFeatures().forEach(function(f) {
+
+            if (f.get("id") == id) {
+                found = f;
+            }
+
+            if (f.get("features")) {
+                f.get("features").forEach(function(inner) {
+                    if (inner.get("id") == id) {
                         found = inner;
                     }
                 });
@@ -134,22 +161,20 @@ function openFromId() {
 
     });
 
-   
+    // ✅ HIER moet dit staan (binnen de functie!)
+    if (found) {
+
+        let coord = found.getGeometry().getCoordinates();
+
+        map.getView().setCenter(coord);
+        map.getView().setZoom(16);
+
+        openPopup(found, coord);
+
+    } else {
+        setTimeout(findFeature, 300);
+    }
 }
-       if (found) {
-
-    let coord = found.getGeometry().getCoordinates();
-
-    map.getView().setCenter(coord);
-    map.getView().setZoom(16);
-
-    // 👇 ENKEL DIT laten staan
-    openPopup(found, coord);
-
-} else {
-    setTimeout(findFeature, 300);
-}
-
 // popup ophalen
 lastClickedFeature = found;
 
