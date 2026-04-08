@@ -7,10 +7,10 @@ let lastClickedFeature = null;
 
 
 // ---------- 🚀 hoofd ----------
-window.addEventListener("load", function () {
+window.addEventListener("load", function init() {
 
     if (!window.map) {
-        setTimeout(arguments.callee, 300);
+        setTimeout(init, 300);
         return;
     }
 
@@ -28,7 +28,6 @@ window.addEventListener("load", function () {
             <div class="info-content" style="display:block;">
                 <div>Zoek op plaats:</div>
                 <input type="text" id="searchBox" placeholder="Zoek plaats..." />
-
                 <div style="margin-top:8px;">
                     Klik op een marker voor informatie.
                 </div>
@@ -38,93 +37,39 @@ window.addEventListener("load", function () {
         mapDiv.appendChild(div);
     }
 
+    // ---------- 🌍 startpositie ----------
+    map.getView().setCenter(ol.proj.fromLonLat([5.4, 52.15]));
+    map.getView().setZoom(8);
 
-    // ---------- 🌍 start / link ----------
-    let params = getParams();
+    // ---------- 🔍 zoeken ----------
+    let searchBox = document.getElementById("searchBox");
 
-    let lat = params.get("lat");
-    let lon = params.get("lon");
-    let zoom = params.get("zoom");
+    if (searchBox) {
+        searchBox.addEventListener("keydown", function(e) {
 
-    function zoomFromLink() {
+            if (e.key === "Enter") {
 
-        if (!window.map) {
-            setTimeout(zoomFromLink, 300);
-            return;
-        }
+                let query = this.value;
 
-        if (lat && lon) {
+                fetch("https://nominatim.openstreetmap.org/search?format=json&q=" + query + ", Netherlands")
+                    .then(r => r.json())
+                    .then(data => {
 
-            let coord = ol.proj.fromLonLat([
-                parseFloat(lon),
-                parseFloat(lat)
-            ]);
+                        if (data.length > 0) {
 
-            map.getView().setCenter(coord);
-            map.getView().setZoom(zoom ? parseInt(zoom) : 15);
+                            let lat = parseFloat(data[0].lat);
+                            let lon = parseFloat(data[0].lon);
 
-            // popup openen
-            setTimeout(function () {
-                map.forEachFeatureAtPixel(
-                    map.getPixelFromCoordinate(coord),
-                    function (feature) {
-                        lastClickedFeature = feature;
-                        if (typeof highlightFeature === "function") {
-                            highlightFeature(feature);
+                            map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
+                            map.getView().setZoom(13);
+
+                        } else {
+                            alert("Plaats niet gevonden");
                         }
-                    }
-                );
-            }, 500);
-
-        } else {
-            map.getView().setCenter(ol.proj.fromLonLat([5.4, 52.15]));
-            map.getView().setZoom(8);
-        }
-    }
-
-  function zoomFromLink() {
-
-    let params = new URLSearchParams(window.location.search);
-
-    let lat = params.get("lat");
-    let lon = params.get("lon");
-    let zoom = params.get("zoom");
-
-    if (!lat || !lon) {
-        // standaard NL
-        map.getView().setCenter(ol.proj.fromLonLat([5.4, 52.15]));
-        map.getView().setZoom(8);
-        return;
-    }
-
-    let coord = ol.proj.fromLonLat([
-        parseFloat(lon),
-        parseFloat(lat)
-    ]);
-
-    // 🔥 wachten tot kaart echt klaar is
-    setTimeout(function () {
-
-        map.getView().setCenter(coord);
-        map.getView().setZoom(zoom ? parseInt(zoom) : 16);
-
-        console.log("zoom geforceerd");
-
-        // 🔥 popup proberen via klik simulatie
-        let pixel = map.getPixelFromCoordinate(coord);
-
-        map.forEachFeatureAtPixel(pixel, function(feature) {
-
-            lastClickedFeature = feature;
-
-            if (typeof highlightFeature === "function") {
-                highlightFeature(feature);
+                    });
             }
         });
-
-    }, 1000); // iets langer wachten → belangrijk!
-}
-    
+    }
 
     // ---------- 📍 klik op marker ----------
     map.on("singleclick", function(evt) {
@@ -132,13 +77,64 @@ window.addEventListener("load", function () {
         map.forEachFeatureAtPixel(evt.pixel, function(feature) {
             lastClickedFeature = feature;
 
-            // ⬇️ voeg knop toe in popup (na openen)
             setTimeout(addShareButtonToPopup, 200);
         });
 
     });
 
+    // ---------- 🔗 openen via link ----------
+    handleLinkZoom();
+
 });
+
+
+// ---------- 🔗 LINK ZOOM (één keer, correct) ----------
+function handleLinkZoom() {
+
+    let params = getParams();
+
+    let lat = params.get("lat");
+    let lon = params.get("lon");
+    let zoom = params.get("zoom");
+
+    if (!lat || !lon || !window.map) return;
+
+    let coord = ol.proj.fromLonLat([
+        parseFloat(lon),
+        parseFloat(lat)
+    ]);
+
+    // 🔥 wachten tot kaart klaar is
+    setTimeout(function () {
+
+        map.getView().setCenter(coord);
+        map.getView().setZoom(zoom ? parseInt(zoom) : 16);
+
+        // 🔁 nog een keer (qgis2web overschrijft vaak)
+        setTimeout(function () {
+            map.getView().setCenter(coord);
+            map.getView().setZoom(zoom ? parseInt(zoom) : 16);
+        }, 500);
+
+        // ---------- popup ----------
+        setTimeout(function () {
+
+            let pixel = map.getPixelFromCoordinate(coord);
+
+            map.forEachFeatureAtPixel(pixel, function(feature) {
+
+                lastClickedFeature = feature;
+
+                if (typeof highlightFeature === "function") {
+                    highlightFeature(feature);
+                }
+
+            });
+
+        }, 800);
+
+    }, 800);
+}
 
 
 // ---------- 🔗 knop in popup ----------
@@ -147,7 +143,6 @@ function addShareButtonToPopup() {
     let popup = document.getElementById("popup-content");
     if (!popup || !lastClickedFeature) return;
 
-    // voorkom dubbel
     if (popup.querySelector(".share-btn")) return;
 
     let btn = document.createElement("button");
