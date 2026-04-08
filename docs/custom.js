@@ -91,7 +91,7 @@ window.addEventListener("load", function init() {
 // ---------- 🔗 LINK ZOOM (één keer, correct) ----------
 function handleLinkZoom() {
 
-    let params = getParams();
+    let params = new URLSearchParams(window.location.search);
 
     let lat = params.get("lat");
     let lon = params.get("lon");
@@ -104,36 +104,37 @@ function handleLinkZoom() {
         parseFloat(lat)
     ]);
 
-    // 🔥 wachten tot kaart klaar is
-    setTimeout(function () {
+    // 🔥 wacht tot kaart echt klaar is (geen animaties meer)
+    map.getView().once("change:center", function () {
 
-        map.getView().setCenter(coord);
-        map.getView().setZoom(zoom ? parseInt(zoom) : 16);
-
-        // 🔁 nog een keer (qgis2web overschrijft vaak)
         setTimeout(function () {
+
             map.getView().setCenter(coord);
             map.getView().setZoom(zoom ? parseInt(zoom) : 16);
-        }, 500);
 
-        // ---------- popup ----------
-        setTimeout(function () {
+            console.log("ZOOM OK");
 
-            let pixel = map.getPixelFromCoordinate(coord);
+            // popup openen
+            setTimeout(function () {
 
-            map.forEachFeatureAtPixel(pixel, function(feature) {
+                let pixel = map.getPixelFromCoordinate(coord);
 
-                lastClickedFeature = feature;
+                map.forEachFeatureAtPixel(pixel, function(feature) {
 
-                if (typeof highlightFeature === "function") {
-                    highlightFeature(feature);
-                }
+                    lastClickedFeature = feature;
 
-            });
+                    if (typeof highlightFeature === "function") {
+                        highlightFeature(feature);
+                    }
 
-        }, 800);
+                });
 
-    }, 800);
+            }, 400);
+
+        }, 300);
+
+    });
+
 }
 
 
