@@ -1,15 +1,11 @@
-// ---------- 🔗 helpers ----------
-function getParams() {
-    return new URLSearchParams(window.location.search);
-}
-
+// ---------- globale variabelen ----------
 let lastClickedFeature = null;
 
 
-// ---------- 🚀 hoofd ----------
+// ---------- start ----------
 window.addEventListener("load", function init() {
 
-    if (!window.map) {
+    if (!window.map || !window.layersList) {
         setTimeout(init, 300);
         return;
     }
@@ -17,7 +13,7 @@ window.addEventListener("load", function init() {
     let mapDiv = document.getElementById("map");
     if (!mapDiv) return;
 
-    // ---------- 📦 infoblok ----------
+    // ---------- infoblok ----------
     if (!document.querySelector(".info-panel")) {
 
         let div = document.createElement("div");
@@ -37,11 +33,11 @@ window.addEventListener("load", function init() {
         mapDiv.appendChild(div);
     }
 
-    // ---------- 🌍 startpositie ----------
+    // ---------- standaard start ----------
     map.getView().setCenter(ol.proj.fromLonLat([5.4, 52.15]));
     map.getView().setZoom(8);
 
-    // ---------- 🔍 zoeken ----------
+    // ---------- zoeken ----------
     let searchBox = document.getElementById("searchBox");
 
     if (searchBox) {
@@ -71,10 +67,11 @@ window.addEventListener("load", function init() {
         });
     }
 
-    // ---------- 📍 klik op marker ----------
+    // ---------- klik op marker ----------
     map.on("singleclick", function(evt) {
 
         map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+
             lastClickedFeature = feature;
 
             setTimeout(addShareButtonToPopup, 200);
@@ -82,65 +79,67 @@ window.addEventListener("load", function init() {
 
     });
 
-    // ---------- 🔗 openen via link ----------
-    handleLinkZoom();
+    // ---------- openen via ID ----------
+    openFromId();
 
 });
 
 
-// ---------- 🔗 LINK ZOOM (één keer, correct) ----------
-function handleLinkZoom() {
+// ---------- openen via ID ----------
+function openFromId() {
 
     let params = new URLSearchParams(window.location.search);
+    let id = params.get("id");
 
-    let lat = params.get("lat");
-    let lon = params.get("lon");
-    let zoom = params.get("zoom");
+    if (!id) return;
 
-    if (!lat || !lon || !window.map) return;
+    function findFeature() {
 
-    let coord = ol.proj.fromLonLat([
-        parseFloat(lon),
-        parseFloat(lat)
-    ]);
-
-    let targetZoom = zoom ? parseInt(zoom) : 16;
-
-    let tries = 0;
-
-    let interval = setInterval(function () {
-
-        tries++;
-
-        map.getView().setCenter(coord);
-        map.getView().setZoom(targetZoom);
-
-        console.log("forceren zoom poging:", tries);
-
-        // stop na paar keer (als qgis2web klaar is)
-        if (tries > 10) {
-
-            clearInterval(interval);
-
-            // 🔍 popup proberen openen
-            let pixel = map.getPixelFromCoordinate(coord);
-
-            map.forEachFeatureAtPixel(pixel, function(feature) {
-
-                lastClickedFeature = feature;
-
-                if (typeof highlightFeature === "function") {
-                    highlightFeature(feature);
-                }
-
-            });
-
+        if (!window.layersList) {
+            setTimeout(findFeature, 300);
+            return;
         }
 
-    }, 300); // elke 300ms opnieuw zetten
+        let found = null;
+
+        layersList.forEach(function(layer) {
+
+            if (layer.getSource && layer.getSource().getFeatures) {
+
+                layer.getSource().getFeatures().forEach(function(f) {
+
+                    if (f.get("id") == id) {
+                        found = f;
+                    }
+
+                });
+            }
+        });
+
+        if (found) {
+
+            let coord = found.getGeometry().getCoordinates();
+
+            map.getView().setCenter(coord);
+            map.getView().setZoom(16);
+
+            lastClickedFeature = found;
+
+            // popup openen
+            if (typeof highlightFeature === "function") {
+                highlightFeature(found);
+            }
+
+        } else {
+            setTimeout(findFeature, 300);
+        }
+    }
+
+    findFeature();
 }
 
-// ---------- 🔗 knop in popup ----------
+
+// ---------- knop in popup ----------
 function addShareButtonToPopup() {
 
     let popup = document.getElementById("popup-content");
@@ -155,16 +154,10 @@ function addShareButtonToPopup() {
 
     btn.onclick = function () {
 
-        let coord = ol.proj.toLonLat(
-            lastClickedFeature.getGeometry().getCoordinates()
-        );
-
-        let zoom = map.getView().getZoom();
+        let id = lastClickedFeature.get("id");
 
         let url = window.location.origin + window.location.pathname +
-            "?lat=" + coord[1].toFixed(5) +
-            "&lon=" + coord[0].toFixed(5) +
-            "&zoom=" + Math.round(zoom);
+            "?id=" + id;
 
         navigator.clipboard.writeText(url);
 
@@ -175,7 +168,7 @@ function addShareButtonToPopup() {
 }
 
 
-// ---------- 🔽 inklappen ----------
+// ---------- inklappen ----------
 document.addEventListener("click", function(e) {
 
     let header = e.target.closest(".info-header");
