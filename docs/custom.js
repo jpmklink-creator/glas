@@ -136,15 +136,19 @@ function openFromId() {
 
    
 }
-       (found) {
+       if (found) {
 
-            let coord = found.getGeometry().getCoordinates();
+    let coord = found.getGeometry().getCoordinates();
 
-            map.getView().setCenter(coord);
-            map.getView().setZoom(16);
+    map.getView().setCenter(coord);
+    map.getView().setZoom(16);
 
-            // simulate click (BELANGRIJK)
-            lastClickedFeature = fou if nd;
+    // 👇 ENKEL DIT laten staan
+    openPopup(found, coord);
+
+} else {
+    setTimeout(findFeature, 300);
+}
 
 // popup ophalen
 lastClickedFeature = found;
