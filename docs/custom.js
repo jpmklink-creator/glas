@@ -1,4 +1,4 @@
-// ---------- 🔗 URL parameters ----------
+// ---------- 🔗 helper ----------
 function getParam(name) {
     let url = new URL(window.location.href);
     return url.searchParams.get(name);
@@ -9,138 +9,124 @@ function getParam(name) {
 window.addEventListener("load", function () {
 
     let mapDiv = document.getElementById("map");
-    if (!mapDiv) return;
+    if (!mapDiv || !window.map) return;
 
-  // ---------- 📍 openen via link ----------
-let lat = getParam("lat");
-let lon = getParam("lon");
-let zoom = getParam("zoom");
+    // ---------- 📦 infoblok ----------
+    if (!document.querySelector(".info-panel")) {
 
-if (lat && lon && window.map && window.layersList) {
+        let div = document.createElement("div");
+        div.className = "info-panel";
 
-    let target = ol.proj.fromLonLat([parseFloat(lon), parseFloat(lat)]);
-    let foundFeature = null;
+        div.innerHTML = `
+            <div class="info-header">▼ Over deze kaart</div>
+            <div class="info-content" style="display:block;">
+                <div>Zoek op plaats:</div>
+                <input type="text" id="searchBox" placeholder="Zoek plaats..." />
+                
+                <button id="copyLinkBtn" style="margin-top:8px;">
+                    📋 Deel huidige kaart
+                </button>
 
-    // zoek feature in alle lagen
-    layersList.forEach(function(layer) {
-        if (layer.getSource && layer.getSource().getFeatures) {
+                <div style="margin-top:8px;">
+                    Klik op een marker voor informatie.
+                </div>
+            </div>
+        `;
 
-            let features = layer.getSource().getFeatures();
+        mapDiv.appendChild(div);
+    }
 
-            features.forEach(function(f) {
-                let geom = f.getGeometry();
-                if (geom && geom.getType() === "Point") {
 
-                    let coord = geom.getCoordinates();
+    // ---------- 🌍 startpositie ----------
+    let lat = getParam("lat");
+    let lon = getParam("lon");
+    let zoom = getParam("zoom");
 
-                    let dist = ol.sphere.getDistance(
-                        ol.proj.toLonLat(coord),
-                        [parseFloat(lon), parseFloat(lat)]
+    if (lat && lon) {
+
+        // 🔗 via link openen
+        let coord = ol.proj.fromLonLat([parseFloat(lon), parseFloat(lat)]);
+        map.getView().setCenter(coord);
+        map.getView().setZoom(zoom ? parseInt(zoom) : 15);
+
+        // 🔥 probeer popup (veilig)
+        try {
+            if (typeof highlightFeature === "function") {
+
+                map.once("rendercomplete", function () {
+
+                    map.forEachFeatureAtPixel(
+                        map.getPixelFromCoordinate(coord),
+                        function (feature) {
+                            highlightFeature(feature);
+                        }
                     );
 
-                    // binnen ~50 meter
-                    if (dist < 50) {
-                        foundFeature = f;
-                    }
-                }
-            });
-        }
-    });
-
-    if (foundFeature) {
-
-        let coord = foundFeature.getGeometry().getCoordinates();
-
-        map.getView().setCenter(coord);
-        map.getView().setZoom(zoom ? parseInt(zoom) : 16);
-
-        // 🔥 popup openen (qgis2web standaard)
-        if (typeof highlightFeature === "function") {
-            highlightFeature(foundFeature);
+                });
+            }
+        } catch (e) {
+            console.log("popup niet geopend");
         }
 
     } else {
-        // fallback
-        map.getView().setCenter(target);
-        map.getView().setZoom(zoom ? parseInt(zoom) : 14);
+        // standaard Nederland
+        map.getView().setCenter(ol.proj.fromLonLat([5.4, 52.15]));
+        map.getView().setZoom(8);
     }
-}
+
 
     // ---------- 🔍 zoekfunctie ----------
-    document.getElementById("searchBox").addEventListener("keydown", function(e) {
+    let searchBox = document.getElementById("searchBox");
 
-        if (e.key === "Enter") {
+    if (searchBox) {
+        searchBox.addEventListener("keydown", function(e) {
 
-            let query = this.value;
+            if (e.key === "Enter") {
 
-            fetch("https://nominatim.openstreetmap.org/search?format=json&q=" + query + ", Netherlands")
-                .then(r => r.json())
-                .then(data => {
+                let query = this.value;
 
-                    if (data.length > 0) {
+                fetch("https://nominatim.openstreetmap.org/search?format=json&q=" + query + ", Netherlands")
+                    .then(r => r.json())
+                    .then(data => {
 
-                        let lat = parseFloat(data[0].lat);
-                        let lon = parseFloat(data[0].lon);
+                        if (data.length > 0) {
 
-                        map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
-                        map.getView().setZoom(13);
+                            let lat = parseFloat(data[0].lat);
+                            let lon = parseFloat(data[0].lon);
 
-                    } else {
-                        alert("Plaats niet gevonden");
-                    }
-                });
-        }
-    });
+                            map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
+                            map.getView().setZoom(13);
+
+                        } else {
+                            alert("Plaats niet gevonden");
+                        }
+                    });
+            }
+        });
+    }
 
 
     // ---------- 🔗 deel-knop ----------
-    document.getElementById("copyLinkBtn").addEventListener("click", function() {
+    let btn = document.getElementById("copyLinkBtn");
 
-        let center = ol.proj.toLonLat(map.getView().getCenter());
-        let zoom = map.getView().getZoom();
+    if (btn) {
+        btn.addEventListener("click", function() {
 
-        let url = window.location.origin + window.location.pathname +
-            "?lat=" + center[1].toFixed(5) +
-            "&lon=" + center[0].toFixed(5) +
-            "&zoom=" + Math.round(zoom);
+            let center = ol.proj.toLonLat(map.getView().getCenter());
+            let zoom = map.getView().getZoom();
 
-        navigator.clipboard.writeText(url);
+            let url = window.location.origin + window.location.pathname +
+                "?lat=" + center[1].toFixed(5) +
+                "&lon=" + center[0].toFixed(5) +
+                "&zoom=" + Math.round(zoom);
 
-        alert("Link gekopieerd!");
-    });
+            navigator.clipboard.writeText(url);
 
-
-   // ---------- 📍 openen via link (VEILIG) ----------
-let lat = getParam("lat");
-let lon = getParam("lon");
-let zoom = getParam("zoom");
-
-if (lat && lon && window.map) {
-
-    let coord = ol.proj.fromLonLat([parseFloat(lon), parseFloat(lat)]);
-
-    map.getView().setCenter(coord);
-    map.getView().setZoom(zoom ? parseInt(zoom) : 15);
-
-    // probeer popup te openen (alleen als functie bestaat)
-    try {
-        if (typeof highlightFeature === "function") {
-
-            map.once("rendercomplete", function () {
-
-                map.forEachFeatureAtPixel(
-                    map.getPixelFromCoordinate(coord),
-                    function (feature) {
-                        highlightFeature(feature);
-                    }
-                );
-
-            });
-        }
-    } catch (e) {
-        console.log("popup niet gevonden", e);
+            alert("Link gekopieerd!");
+        });
     }
-}
+});
+
 
 // ---------- 🔽 inklappen ----------
 document.addEventListener("click", function(e) {
