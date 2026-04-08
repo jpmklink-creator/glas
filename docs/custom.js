@@ -104,39 +104,41 @@ function handleLinkZoom() {
         parseFloat(lat)
     ]);
 
-    // 🔥 wacht tot kaart echt klaar is (geen animaties meer)
-    map.getView().once("change:center", function () {
+    let targetZoom = zoom ? parseInt(zoom) : 16;
 
-        setTimeout(function () {
+    let tries = 0;
 
-            map.getView().setCenter(coord);
-            map.getView().setZoom(zoom ? parseInt(zoom) : 16);
+    let interval = setInterval(function () {
 
-            console.log("ZOOM OK");
+        tries++;
 
-            // popup openen
-            setTimeout(function () {
+        map.getView().setCenter(coord);
+        map.getView().setZoom(targetZoom);
 
-                let pixel = map.getPixelFromCoordinate(coord);
+        console.log("forceren zoom poging:", tries);
 
-                map.forEachFeatureAtPixel(pixel, function(feature) {
+        // stop na paar keer (als qgis2web klaar is)
+        if (tries > 10) {
 
-                    lastClickedFeature = feature;
+            clearInterval(interval);
 
-                    if (typeof highlightFeature === "function") {
-                        highlightFeature(feature);
-                    }
+            // 🔍 popup proberen openen
+            let pixel = map.getPixelFromCoordinate(coord);
 
-                });
+            map.forEachFeatureAtPixel(pixel, function(feature) {
 
-            }, 400);
+                lastClickedFeature = feature;
 
-        }, 300);
+                if (typeof highlightFeature === "function") {
+                    highlightFeature(feature);
+                }
 
-    });
+            });
 
+        }
+
+    }, 300); // elke 300ms opnieuw zetten
 }
-
 
 // ---------- 🔗 knop in popup ----------
 function addShareButtonToPopup() {
