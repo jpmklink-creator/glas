@@ -82,73 +82,47 @@ window.addEventListener("load", function () {
         }
     }
 
-   function zoomFromLink() {
+  function zoomFromLink() {
 
-    if (!window.map || !window.layersList) {
-        setTimeout(zoomFromLink, 400);
+    let params = new URLSearchParams(window.location.search);
+
+    let lat = params.get("lat");
+    let lon = params.get("lon");
+    let zoom = params.get("zoom");
+
+    if (!lat || !lon) {
+        // standaard NL
+        map.getView().setCenter(ol.proj.fromLonLat([5.4, 52.15]));
+        map.getView().setZoom(8);
         return;
     }
 
-    if (lat && lon) {
+    let coord = ol.proj.fromLonLat([
+        parseFloat(lon),
+        parseFloat(lat)
+    ]);
 
-        let targetLonLat = [parseFloat(lon), parseFloat(lat)];
-        let targetCoord = ol.proj.fromLonLat(targetLonLat);
+    // 🔥 wachten tot kaart echt klaar is
+    setTimeout(function () {
 
-        let foundFeature = null;
+        map.getView().setCenter(coord);
+        map.getView().setZoom(zoom ? parseInt(zoom) : 16);
 
-        // 🔍 zoek feature in alle lagen
-        layersList.forEach(function(layer) {
+        console.log("zoom geforceerd");
 
-            if (layer.getSource && layer.getSource().getFeatures) {
+        // 🔥 popup proberen via klik simulatie
+        let pixel = map.getPixelFromCoordinate(coord);
 
-                let features = layer.getSource().getFeatures();
+        map.forEachFeatureAtPixel(pixel, function(feature) {
 
-                features.forEach(function(f) {
+            lastClickedFeature = feature;
 
-                    let geom = f.getGeometry();
-
-                    if (geom && geom.getType() === "Point") {
-
-                        let coord = geom.getCoordinates();
-                        let lonlat = ol.proj.toLonLat(coord);
-
-                        let dist = Math.abs(lonlat[0] - targetLonLat[0]) +
-                                   Math.abs(lonlat[1] - targetLonLat[1]);
-
-                        if (dist < 0.0005) { // ≈ 50 meter
-                            foundFeature = f;
-                        }
-                    }
-                });
+            if (typeof highlightFeature === "function") {
+                highlightFeature(feature);
             }
         });
 
-        if (foundFeature) {
-
-            let coord = foundFeature.getGeometry().getCoordinates();
-
-            map.getView().setCenter(coord);
-            map.getView().setZoom(16);
-
-            lastClickedFeature = foundFeature;
-
-            // 💬 popup openen
-            setTimeout(function () {
-                if (typeof highlightFeature === "function") {
-                    highlightFeature(foundFeature);
-                }
-            }, 300);
-
-        } else {
-            // fallback
-            map.getView().setCenter(targetCoord);
-            map.getView().setZoom(14);
-        }
-
-    } else {
-        map.getView().setCenter(ol.proj.fromLonLat([5.4, 52.15]));
-        map.getView().setZoom(8);
-    }
+    }, 1000); // iets langer wachten → belangrijk!
 }
     
 
