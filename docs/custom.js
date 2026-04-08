@@ -134,21 +134,9 @@ function openFromId() {
 
     });
 
-    if (found) {
-
-        let coord = found.getGeometry().getCoordinates();
-
-        map.getView().setCenter(coord);
-        map.getView().setZoom(16);
-
-        // popup handmatig openen
-        openPopup(found, coord);
-
-    } else {
-        setTimeout(findFeature, 300);
-    }
+   
 }
-        if (found) {
+       (found) {
 
             let coord = found.getGeometry().getCoordinates();
 
@@ -156,7 +144,7 @@ function openFromId() {
             map.getView().setZoom(16);
 
             // simulate click (BELANGRIJK)
-            lastClickedFeature = found;
+            lastClickedFeature = fou if nd;
 
 // popup ophalen
 lastClickedFeature = found;
