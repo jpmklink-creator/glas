@@ -144,6 +144,9 @@ function openFromId() {
             lastClickedFeature = found;
 
 // popup ophalen
+lastClickedFeature = found;
+
+// popup ophalen
 let overlay = map.getOverlays().getArray()[0];
 let content = document.getElementById("popup-content");
 
