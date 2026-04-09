@@ -113,7 +113,7 @@ function openFromId() {
             let source = layer.getSource();
             if (!source.getFeatures) return;
 
-           if (layerName && layer.get("title") !== layerName) return;
+       
 
             source.getFeatures().forEach(function(f) {
 
