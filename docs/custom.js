@@ -190,8 +190,14 @@ function openPopup(feature, coord) {
 
     content.innerHTML = html;
 
- 
+ overlay.setPosition(coord);
 
+// 🔥 forceer opnieuw (belangrijk)
+setTimeout(function() {
+    lastClickedFeature = feature;
+    addShareButtonToPopup();
+}, 300);
+console.log("popup feature:", feature);
     // knop toevoegen
     setTimeout(addShareButtonToPopup, 200);
 }
