@@ -191,12 +191,8 @@ function openPopup(feature, coord) {
 
     content.innerHTML = html;
 
-    // 🔴 BELANGRIJK: popup zichtbaar maken
-    container.style.display = "block";
-
-    // positie zetten
-    overlay.setPosition(coord);
-
+ 
+   
     // soms nodig: force redraw
     map.render();
 
