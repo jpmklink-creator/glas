@@ -158,11 +158,7 @@ coord = ol.proj.fromLonLat(coord);
 
                         
                         
-// popup ophalen
-   
 
-    findFeature();
-}
 
 
 function openPopup(feature, coord) {
