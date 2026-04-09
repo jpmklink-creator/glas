@@ -82,9 +82,10 @@ window.addEventListener("load", function init() {
 
     // ---------- openen via URL ----------
  map.once("rendercomplete", function () {
-    setTimeout(openFromId, 200);
+    openFromId();
 });
 
+});
 
 
 // ---------- openen via ID ----------
@@ -92,7 +93,7 @@ function openFromId() {
 
     let params = new URLSearchParams(window.location.search);
     let id = params.get("id");
-   
+    let layerName = params.get("layer");
 
     if (!id) return;
 
@@ -112,7 +113,7 @@ function openFromId() {
             let source = layer.getSource();
             if (!source.getFeatures) return;
 
-       
+           if (layerName && layer.get("title") !== layerName) return;
 
             source.getFeatures().forEach(function(f) {
 
@@ -155,10 +156,64 @@ coord = ol.proj.fromLonLat(coord);
 
 
 
+function findFeature() {
+
+    if (!window.layersList) {
+        setTimeout(findFeature, 300);
+        return;
+    }
+
+    let found = null;
+
+    layersList.forEach(function(layer) {
+
+        if (!layer.getSource) return;
+
+        let source = layer.getSource();
+        if (!source.getFeatures) return;
+
+        if (layerName && !layer.get("title").includes(layerName)) return;
+
+        source.getFeatures().forEach(function(f) {
+
+            // normale feature
+            if (f.get("id") == id) {
+                found = f;
+            }
+
+            // cluster support
+            if (f.get("features")) {
+                f.get("features").forEach(function(inner) {
+                    if (inner.get("id") == id) {
+                        found = inner;
+                    }
+                });
+            }
+
+        });
+
+    });
+
+    if (found) {
+
+        let coord = found.getGeometry().getCoordinates();
+
+        map.getView().setCenter(coord);
+        map.getView().setZoom(16);
+
+        openPopup(found, coord);
+
+    } else {
+        setTimeout(findFeature, 300);
+    }
 
                         
                         
+// popup ophalen
+   
 
+    findFeature();
+}
 
 
 function openPopup(feature, coord) {
@@ -186,14 +241,15 @@ function openPopup(feature, coord) {
 
     content.innerHTML = html;
 
- overlay.setPosition(coord);
+    // 🔴 BELANGRIJK: popup zichtbaar maken
+    container.style.display = "block";
 
-// 🔥 forceer opnieuw (belangrijk)
-setTimeout(function() {
-    lastClickedFeature = feature;
-    addShareButtonToPopup();
-}, 300);
-console.log("popup feature:", feature);
+    // positie zetten
+    overlay.setPosition(coord);
+
+    // soms nodig: force redraw
+    map.render();
+
     // knop toevoegen
     setTimeout(addShareButtonToPopup, 200);
 }
@@ -239,9 +295,8 @@ function addShareButtonToPopup() {
         });
 
         let url = window.location.origin + window.location.pathname +
-            let url = window.location.origin + window.location.pathname +
-    "?id=" + id;
-            
+            "?id=" + id +
+            "&layer=" + encodeURIComponent(layerName);
 
         navigator.clipboard.writeText(url);
 
