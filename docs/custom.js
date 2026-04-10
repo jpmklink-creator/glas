@@ -279,10 +279,13 @@ function openPopup(feature, coord) {
     let html = "";
 
     for (let key in props) {
-        if (key !== "geometry") {
-            html += "<b>" + key + "</b>: " + props[key] + "<br>";
-        }
+
+    if (key === "geometry" || key === "trefwoorden") {
+        continue;
     }
+
+    html += "<b>" + key + "</b>: " + props[key] + "<br>";
+}
 
     content.innerHTML = html;
 
