@@ -1,4 +1,3 @@
-
 // ---------- globale variabelen ----------
 let lastClickedFeature = null;
 
@@ -23,8 +22,8 @@ window.addEventListener("load", function init() {
         div.innerHTML = `
             <div class="info-header">▼ Over deze kaart</div>
             <div class="info-content" style="display:block;">
-                <div>Zoek op plaats:</div>
-                <input type="text" id="searchBox" placeholder="Zoek plaats..." />
+                <div>Zoek:</div>
+                <input type="text" id="searchBox" placeholder="Zoek..." />
                 <div style="margin-top:8px;">
                     Klik op een marker voor informatie.
                 </div>
@@ -34,9 +33,10 @@ window.addEventListener("load", function init() {
         mapDiv.appendChild(div);
     }
 
-    // ---------- standaard start ----------
+    // ---------- startpositie ----------
     map.getView().setCenter(ol.proj.fromLonLat([5.4, 52.15]));
     map.getView().setZoom(8);
+
 
     // ---------- zoeken ----------
     let searchBox = document.getElementById("searchBox");
@@ -44,90 +44,105 @@ window.addEventListener("load", function init() {
     if (searchBox) {
         searchBox.addEventListener("keydown", function(e) {
 
-if (e.key === "Enter") {
+            if (e.key === "Enter") {
 
-    let query = this.value.toLowerCase();
+                let query = this.value.toLowerCase();
+                let results = [];
 
-    let results = [];
+                layersList.forEach(function(layer) {
 
-    layersList.forEach(function(layer) {
+                    if (!layer.getSource) return;
 
-        if (!layer.getSource) return;
+                    let source = layer.getSource();
+                    if (!source.getFeatures) return;
 
-        let source = layer.getSource();
-        if (!source.getFeatures) return;
+                    source.getFeatures().forEach(function(f) {
 
-        source.getFeatures().forEach(function(f) {
+                        let props = f.getProperties();
 
-            let props = f.getProperties();
+                        for (let key in props) {
 
-            for (let key in props) {
+                            if (key === "geometry" || key === "id" || key === "link") continue;
 
-                // ❌ skip geometry, id en link
-                if (key === "geometry" || key === "id" || key === "link") continue;
+                            let value = String(props[key]).toLowerCase();
 
-                let value = String(props[key]).toLowerCase();
-
-                if (value.includes(query)) {
-                    results.push(f);
-                    break;
-                }
-            }
-
-            // cluster support
-            if (f.get("features")) {
-                f.get("features").forEach(function(inner) {
-
-                    let props = inner.getProperties();
-
-                    for (let key in props) {
-
-                        if (key === "geometry" || key === "id" || key === "link") continue;
-
-                        let value = String(props[key]).toLowerCase();
-
-                        if (value.includes(query)) {
-                            results.push(inner);
-                            break;
+                            if (value.includes(query)) {
+                                results.push(f);
+                                break;
+                            }
                         }
-                    }
+
+                        // cluster support
+                        if (f.get("features")) {
+                            f.get("features").forEach(function(inner) {
+
+                                let props = inner.getProperties();
+
+                                for (let key in props) {
+
+                                    if (key === "geometry" || key === "id" || key === "link") continue;
+
+                                    let value = String(props[key]).toLowerCase();
+
+                                    if (value.includes(query)) {
+                                        results.push(inner);
+                                        break;
+                                    }
+                                }
+
+                            });
+                        }
+
+                    });
 
                 });
-            }
 
+                if (results.length > 0) {
+
+                    let f = results[0];
+                    let coord = f.getGeometry().getCoordinates();
+
+                    // projectie fix
+                    if (coord[0] < 10) {
+                        coord = ol.proj.fromLonLat(coord);
+                    }
+
+                    map.getView().animate({
+                        center: coord,
+                        zoom: 16,
+                        duration: 800
+                    });
+
+                    openPopup(f, coord);
+
+                    alert(results.length + " resultaat(en) gevonden");
+
+                } else {
+                    alert("Geen resultaten gevonden");
+                }
+            }
+        });
+    }
+
+
+    // ---------- klik op marker ----------
+    map.on("singleclick", function(evt) {
+
+        map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+            lastClickedFeature = feature;
+            setTimeout(addShareButtonToPopup, 200);
         });
 
     });
 
-    if (results.length > 0) {
 
-        let f = results[0];
+    // ---------- openen via URL ----------
+    map.once("rendercomplete", function () {
+        setTimeout(openFromId, 200);
+    });
 
-        let coord = f.getGeometry().getCoordinates();
+}); // ✅ init correct afgesloten
 
-        // jouw projectie fix
-        if (coord[0] < 10) {
-            coord = ol.proj.fromLonLat(coord);
-        }
-
-        map.getView().animate({
-            center: coord,
-            zoom: 16,
-            duration: 800
-        });
-
-        openPopup(f, coord);
-
-        alert(results.length + " resultaat(en) gevonden");
-
-    } else {
-
-        alert("Geen resultaten gevonden");
-    }
-}
-});
-    }    
-                
 
 
 // ---------- openen via ID ----------
@@ -135,7 +150,6 @@ function openFromId() {
 
     let params = new URLSearchParams(window.location.search);
     let id = params.get("id");
-    let layerName = params.get("layer");
 
     if (!id) return;
 
@@ -154,8 +168,6 @@ function openFromId() {
 
             let source = layer.getSource();
             if (!source.getFeatures) return;
-
-           if (layerName && layer.get("title") !== layerName) return;
 
             source.getFeatures().forEach(function(f) {
 
@@ -177,17 +189,12 @@ function openFromId() {
 
         if (found) {
 
-           
- let coord = found.getGeometry().getCoordinates();
+            let coord = found.getGeometry().getCoordinates();
 
-// 🔍 check volgorde (belangrijk!)
-if (coord[0] > 90) {
-    // waarschijnlijk al EPSG:3857 → niets doen
-} else {
-    // EPSG:4326 → transformeren
-    coord = ol.proj.fromLonLat(coord);
-}
-            
+            if (coord[0] < 10) {
+                coord = ol.proj.fromLonLat(coord);
+            }
+
             map.getView().setCenter(coord);
             map.getView().setZoom(16);
 
@@ -203,108 +210,36 @@ if (coord[0] > 90) {
 
 
 
-function findFeature() {
-
-    if (!window.layersList) {
-        setTimeout(findFeature, 300);
-        return;
-    }
-
-    let found = null;
-
-    layersList.forEach(function(layer) {
-
-        if (!layer.getSource) return;
-
-        let source = layer.getSource();
-        if (!source.getFeatures) return;
-
-        if (layerName && !layer.get("title").includes(layerName)) return;
-
-        source.getFeatures().forEach(function(f) {
-
-            // normale feature
-            if (f.get("id") == id) {
-                found = f;
-            }
-
-            // cluster support
-            if (f.get("features")) {
-                f.get("features").forEach(function(inner) {
-                    if (inner.get("id") == id) {
-                        found = inner;
-                    }
-                });
-            }
-
-        });
-
-    });
-
-    if (found) {
-
-        let coord = found.getGeometry().getCoordinates();
-
-        map.getView().setCenter(coord);
-        map.getView().setZoom(16);
-
-        openPopup(found, coord);
-
-    } else {
-        setTimeout(findFeature, 300);
-    }
-
-                        
-                        
-// popup ophalen
-   
-
-    findFeature();
-}
-
-
+// ---------- popup ----------
 function openPopup(feature, coord) {
 
     lastClickedFeature = feature;
 
     let overlay = map.getOverlays().getArray()[0];
     let content = document.getElementById("popup-content");
-    let container = document.getElementById("popup");
 
-    if (!overlay || !content || !container) {
-        console.log("Popup elementen ontbreken");
-        return;
-    }
+    if (!overlay || !content) return;
 
-    // content vullen
     let props = feature.getProperties();
     let html = "";
 
     for (let key in props) {
 
-    if (key === "geometry" || key === "trefwoord") {
-        continue;
+        // trefwoorden niet tonen
+        if (key === "geometry" || key === "trefwoorden") continue;
+
+        html += "<b>" + key + "</b>: " + props[key] + "<br>";
     }
 
-    html += "<b>" + key + "</b>: " + props[key] + "<br>";
-}
-
     content.innerHTML = html;
-
-    // 🔴 BELANGRIJK: popup zichtbaar maken
-    container.style.display = "block";
-
-    // positie zetten
     overlay.setPosition(coord);
 
-    // soms nodig: force redraw
-    map.render();
-
-    // knop toevoegen
     setTimeout(addShareButtonToPopup, 200);
 }
 
-// ---------- knop in popup ----------
+
+
+// ---------- share knop ----------
 function addShareButtonToPopup() {
 
     let popup = document.getElementById("popup-content");
@@ -321,40 +256,16 @@ function addShareButtonToPopup() {
 
         let id = lastClickedFeature.get("id");
 
-        let layerName = "";
-
-        layersList.forEach(function(layer) {
-
-            if (!layer.getSource) return;
-
-            let source = layer.getSource();
-            if (!source.getFeatures) return;
-
-            source.getFeatures().forEach(function(f) {
-
-                if (f === lastClickedFeature) {
-                    layerName = layer.get("title");
-                }
-
-                if (f.get("features") && f.get("features").includes(lastClickedFeature)) {
-                    layerName = layer.get("title");
-                }
-
-            });
-
-        });
-
         let url = window.location.origin + window.location.pathname +
-            "?id=" + id +
-            "&layer=" + encodeURIComponent(layerName);
+            "?id=" + id;
 
         navigator.clipboard.writeText(url);
-
         alert("Link gekopieerd!");
     };
 
     popup.appendChild(btn);
 }
+
 
 
 // ---------- inklappen ----------
