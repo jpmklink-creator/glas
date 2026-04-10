@@ -124,6 +124,7 @@ if (e.key === "Enter") {
 
         alert("Geen resultaten gevonden");
     }
+}
 });
     }    
                 
