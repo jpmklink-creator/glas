@@ -44,48 +44,88 @@ window.addEventListener("load", function init() {
     if (searchBox) {
         searchBox.addEventListener("keydown", function(e) {
 
-            if (e.key === "Enter") {
+if (e.key === "Enter") {
 
-                let query = this.value;
+    let query = this.value.toLowerCase();
 
-                fetch("https://nominatim.openstreetmap.org/search?format=json&q=" + query + ", Netherlands")
-                    .then(r => r.json())
-                    .then(data => {
+    let results = [];
 
-                        if (data.length > 0) {
+    layersList.forEach(function(layer) {
 
-                            let lat = parseFloat(data[0].lat);
-                            let lon = parseFloat(data[0].lon);
+        if (!layer.getSource) return;
 
-                            map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
-                            map.getView().setZoom(13);
+        let source = layer.getSource();
+        if (!source.getFeatures) return;
 
-                        } else {
-                            alert("Plaats niet gevonden");
-                        }
-                    });
+        source.getFeatures().forEach(function(f) {
+
+            let props = f.getProperties();
+
+            for (let key in props) {
+
+                // ❌ skip geometry, id en link
+                if (key === "geometry" || key === "id" || key === "link") continue;
+
+                let value = String(props[key]).toLowerCase();
+
+                if (value.includes(query)) {
+                    results.push(f);
+                    break;
+                }
             }
-        });
-    }
 
-    // ---------- klik op marker ----------
-    map.on("singleclick", function(evt) {
+            // cluster support
+            if (f.get("features")) {
+                f.get("features").forEach(function(inner) {
 
-        map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+                    let props = inner.getProperties();
 
-            lastClickedFeature = feature;
+                    for (let key in props) {
 
-            setTimeout(addShareButtonToPopup, 200);
+                        if (key === "geometry" || key === "id" || key === "link") continue;
+
+                        let value = String(props[key]).toLowerCase();
+
+                        if (value.includes(query)) {
+                            results.push(inner);
+                            break;
+                        }
+                    }
+
+                });
+            }
+
         });
 
     });
 
-    // ---------- openen via URL ----------
- map.once("rendercomplete", function () {
-    openFromId();
-});
+    if (results.length > 0) {
 
-});
+        let f = results[0];
+
+        let coord = f.getGeometry().getCoordinates();
+
+        // jouw projectie fix
+        if (coord[0] < 10) {
+            coord = ol.proj.fromLonLat(coord);
+        }
+
+        map.getView().animate({
+            center: coord,
+            zoom: 16,
+            duration: 800
+        });
+
+        openPopup(f, coord);
+
+        alert(results.length + " resultaat(en) gevonden");
+
+    } else {
+
+        alert("Geen resultaten gevonden");
+    }
+}
+            
 
 
 // ---------- openen via ID ----------
