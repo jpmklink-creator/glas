@@ -295,7 +295,7 @@ function showResultsList() {
         let props = f.getProperties();
 
         // kies wat je wilt tonen (naam veld)
-       let label = props.plaats || ("Resultaat " + (index + 1));
+      let label = (props.plaats || "") + " - " + (props.gebouw || "");
 
         let item = document.createElement("div");
         item.innerText = label;
