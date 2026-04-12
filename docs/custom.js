@@ -46,7 +46,7 @@ window.addEventListener("load", function init() {
             if (e.key === "Enter") {
 
                 let query = this.value.toLowerCase();
-                let results = [];
+                searchResults = [];
 
                 layersList.forEach(function(layer) {
 
