@@ -37,83 +37,89 @@ window.addEventListener("load", function init() {
     map.getView().setCenter(ol.proj.fromLonLat([5.4, 52.15]));
     map.getView().setZoom(8);
 
-    // ---------- zoeken ----------
-    let searchBox = document.getElementById("searchBox");
+ // ---------- zoeken ----------
+let searchBox = document.getElementById("searchBox");
 
-    if (searchBox) {
-        searchBox.addEventListener("keydown", function(e) {
+if (searchBox) {
+    searchBox.addEventListener("keydown", function(e) {
 
-            if (e.key === "Enter") {
+        if (e.key === "Enter") {
 
-                let query = this.value.toLowerCase();
-                searchResults = [];
+            let query = this.value.toLowerCase();
+            searchResults = [];
 
-                layersList.forEach(function(layer) {
+            layersList.forEach(function(layer) {
 
-                    if (!layer.getSource) return;
+                if (!layer.getSource) return;
 
-                    let source = layer.getSource();
-                    if (!source.getFeatures) return;
+                let source = layer.getSource();
+                if (!source.getFeatures) return;
 
-                    source.getFeatures().forEach(function(f) {
+                source.getFeatures().forEach(function(f) {
 
-                        let props = f.getProperties();
+                    let props = f.getProperties();
 
-                        for (let key in props) {
+                    for (let key in props) {
 
-                            if (key === "geometry" || key === "id" || key === "link") continue;
+                        if (key === "geometry" || key === "id" || key === "link") continue;
 
-                            let value = String(props[key]).toLowerCase();
+                        let value = String(props[key]).toLowerCase();
 
-                            if (value.includes(query)) {
-                               searchResults.push(f);
-                                break;
-                            }
+                        if (value.includes(query)) {
+                            searchResults.push(f);
+                            break;
                         }
+                    }
 
-                        // cluster support
-                        if (f.get("features")) {
-                            f.get("features").forEach(function(inner) {
+                    if (f.get("features")) {
+                        f.get("features").forEach(function(inner) {
 
-                                let props = inner.getProperties();
+                            let props = inner.getProperties();
 
-                                for (let key in props) {
+                            for (let key in props) {
 
-                                    if (key === "geometry" || key === "id" || key === "link") continue;
+                                if (key === "geometry" || key === "id" || key === "link") continue;
 
-                                    let value = String(props[key]).toLowerCase();
+                                let value = String(props[key]).toLowerCase();
 
-                                    if (value.includes(query)) {
-                                       searchResults.push(inner);
-                                        break;
-                                    }
+                                if (value.includes(query)) {
+                                    searchResults.push(inner);
+                                    break;
                                 }
+                            }
 
-                            });
-                        }
-
-                    });
+                        });
+                    }
 
                 });
 
-                if (searchResults.length > 0) {
+            });
 
-    showResultsList();
+            if (searchResults.length > 0) {
 
-    let f = searchResults[0];
+                showResultsList();
 
-    let coord = f.getGeometry().getCoordinates();
+                let f = searchResults[0];
+                let coord = f.getGeometry().getCoordinates();
 
-    if (coord[0] < 10) {
-        coord = ol.proj.fromLonLat(coord);
-    }
+                if (coord[0] < 10) {
+                    coord = ol.proj.fromLonLat(coord);
+                }
 
-    map.getView().animate({
-       
+                map.getView().animate({
+                    center: coord,
+                    zoom: 16,
+                    duration: 800
+                });
+
+                openPopup(f, coord);
+
+            } else {
+                alert("Geen resultaten gevonden");
             }
-        });
-    }
-
+        }
+    });
+}
     // ---------- klik op marker ----------
     map.on("singleclick", function(evt) {
 
