@@ -28,6 +28,10 @@ window.addEventListener("load", function init() {
                     Klik op een marker voor informatie.
                 </div>
             </div>
+
+            <div style="margin-top:10px;">
+    <button onclick="showInfo()">📘 Toelichting</button>
+</div>
         `;
 
         mapDiv.appendChild(div);
@@ -325,3 +329,31 @@ function showResultsList() {
     document.querySelector(".info-content").appendChild(container);
 }
         
+e kaart heeft vier dagen die verwijzen naar websites met foto’s en toelichting van ramen in een bepaald gebied. Dat zijn gebouwen in Oost Brabant, het gebied tussen Maas en Waal, de oostelijke mijnstreek en de Duitse website met gebouwen in Limburg. De eerste drie zijn volledig opgenomen.
+
+
+De laag webpagina‘s betreft individuele webpagina’s waar 	gebouwen te vinden zijn met foto’s en/of gegevens over monumentaal glas
+
+
+De laag beeldbank RCE betreft een eerste selectie van gebouwen waarvan foto’s van monumentaal glas in de beeldbank zijn opgenomen.
+
+
+De laag kerkfotografie betreft een eerste selectie van de gebouwen op de website kerkfotografie.nl waarvan uit de foto’s blijkt dat er monumentaal glas aanwezig is.
+
+
+De laag boeken betreft gebouwen waar boeken met foto’s en beschrijvingen van monumentaal glas zijn te vinden 
+
+
+De laag pers betreft gebouwen waarvan actuele berichten over monumentaal glas in kranten, tijdschriften,   op Facebook of LinkedIn verschenen zijn.  
+
+
+Iedere laag	is met vinkjes op de legenda in of uit te zetten.
+
+
+Het idee een kaart te gebruiken om gegevens te presenteren heb ik te danken aan Rudolf Tak, glazenier en Bert van Rest, gis-deskundige.
+
+    </p>
+    `;
+
+    document.body.appendChild(box);
+}
