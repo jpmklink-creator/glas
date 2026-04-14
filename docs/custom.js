@@ -20,7 +20,7 @@ window.addEventListener("load", function init() {
         div.className = "info-panel";
 
         div.innerHTML = `
-            <div class="info-header">▼ Over deze kaart</div>
+            <div class="info-header">monumentaal glas op de kaart</div>
             <div class="info-content" style="display:block;">
                 <div>Zoek:</div>
                 <input type="text" id="searchBox" placeholder="Zoek..." />
