@@ -280,79 +280,78 @@ document.addEventListener("click", function(e) {
         header.innerHTML = (open ? "▶ " : "▼ ") + "Over deze kaart";
     }
 });
-function showResultsList() {
 
-    // oude lijst verwijderen
-    let old = document.getElementById("resultsList");
+function showInfo() {
+
+    let old = document.getElementById("infoWindow");
     if (old) old.remove();
 
-    let container = document.createElement("div");
-    container.id = "resultsList";
-    container.style.marginTop = "10px";
-    container.style.maxHeight = "150px";
-    container.style.overflowY = "auto";
-    container.style.background = "#fff";
-    container.style.padding = "5px";
+    let box = document.createElement("div");
+    box.id = "infoWindow";
 
-    searchResults.forEach(function(f, index) {
+    box.style.position = "fixed";
+    box.style.top = "10%";
+    box.style.left = "10%";
+    box.style.width = "80%";
+    box.style.height = "75%";
+    box.style.background = "white";
+    box.style.border = "1px solid #999";
+    box.style.padding = "15px";
+    box.style.zIndex = "9999";
+    box.style.overflowY = "auto";
+    box.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
 
-        let props = f.getProperties();
+    box.innerHTML = `
+        <div style="text-align:right;">
+            <button onclick="document.getElementById('infoWindow').remove()">✖ Sluiten</button>
+        </div>
 
-        // kies wat je wilt tonen (naam veld)
-      let label = (props.plaats || "") + " - " + (props.gebouw || "");
+        <h2>Toelichting</h2>
 
-        let item = document.createElement("div");
-        item.innerText = label;
-        item.style.cursor = "pointer";
-        item.style.padding = "4px";
+        <p>
+        De kaart heeft vier lagen die verwijzen naar websites met foto’s en toelichting
+        van ramen in een bepaald gebied. Dat zijn gebouwen in Oost-Brabant, het gebied
+        tussen Maas en Waal, de oostelijke mijnstreek en de Duitse website met gebouwen
+        in Limburg. De eerste drie zijn volledig opgenomen.
+        </p>
 
-        item.onclick = function() {
+        <p>
+        <b>Laag Webpagina’s</b><br>
+        Individuele webpagina’s waar gebouwen te vinden zijn met foto’s en/of gegevens
+        over monumentaal glas.
+        </p>
 
-            let coord = f.getGeometry().getCoordinates();
+        <p>
+        <b>Laag Beeldbank RCE</b><br>
+        Een eerste selectie van gebouwen waarvan foto’s van monumentaal glas in de
+        beeldbank zijn opgenomen.
+        </p>
 
-            if (coord[0] < 10) {
-                coord = ol.proj.fromLonLat(coord);
-            }
+        <p>
+        <b>Laag Kerkfotografie</b><br>
+        Een eerste selectie van gebouwen op de website kerkfotografie.nl waarvan uit de
+        foto’s blijkt dat er monumentaal glas aanwezig is.
+        </p>
 
-            map.getView().animate({
-                center: coord,
-                zoom: 16,
-                duration: 800
-            });
+        <p>
+        <b>Laag Boeken</b><br>
+        Gebouwen waar boeken met foto’s en beschrijvingen van monumentaal glas zijn te vinden.
+        </p>
 
-            openPopup(f, coord);
-        };
+        <p>
+        <b>Laag Pers</b><br>
+        Gebouwen waarvan actuele berichten over monumentaal glas in kranten, tijdschriften,
+        op Facebook of LinkedIn verschenen zijn.
+        </p>
 
-        container.appendChild(item);
-    });
+        <p>
+        Iedere laag is met vinkjes in de legenda aan of uit te zetten.
+        </p>
 
-    document.querySelector(".info-content").appendChild(container);
-}
-        
-e kaart heeft vier dagen die verwijzen naar websites met foto’s en toelichting van ramen in een bepaald gebied. Dat zijn gebouwen in Oost Brabant, het gebied tussen Maas en Waal, de oostelijke mijnstreek en de Duitse website met gebouwen in Limburg. De eerste drie zijn volledig opgenomen.
-
-
-De laag webpagina‘s betreft individuele webpagina’s waar 	gebouwen te vinden zijn met foto’s en/of gegevens over monumentaal glas
-
-
-De laag beeldbank RCE betreft een eerste selectie van gebouwen waarvan foto’s van monumentaal glas in de beeldbank zijn opgenomen.
-
-
-De laag kerkfotografie betreft een eerste selectie van de gebouwen op de website kerkfotografie.nl waarvan uit de foto’s blijkt dat er monumentaal glas aanwezig is.
-
-
-De laag boeken betreft gebouwen waar boeken met foto’s en beschrijvingen van monumentaal glas zijn te vinden 
-
-
-De laag pers betreft gebouwen waarvan actuele berichten over monumentaal glas in kranten, tijdschriften,   op Facebook of LinkedIn verschenen zijn.  
-
-
-Iedere laag	is met vinkjes op de legenda in of uit te zetten.
-
-
-Het idee een kaart te gebruiken om gegevens te presenteren heb ik te danken aan Rudolf Tak, glazenier en Bert van Rest, gis-deskundige.
-
-    </p>
+        <p>
+        Het idee om een kaart te gebruiken om gegevens te presenteren heb ik te danken aan
+        Rudolf Tak (glazenier) en Bert van Rest (GIS-deskundige).
+        </p>
     `;
 
     document.body.appendChild(box);
