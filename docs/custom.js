@@ -350,7 +350,7 @@ function showInfo() {
 
         <p>
         Het idee om een kaart te gebruiken om gegevens te presenteren heb ik te danken aan
-        Rudolf Tak (glazenier) en Bert van Rest (GIS-deskundige).
+        Rudolf van der Tak (glazenier) en Bert van Rest (GIS-deskundige).
         </p>
     `;
 
