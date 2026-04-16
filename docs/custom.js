@@ -140,6 +140,10 @@ function searchFeature(f, query) {
 // ---------- resultatenlijst ----------
 function showResultsList() {
 
+    if (searchResults.length > 0) {
+        zoomToResult(0);
+    }
+
     let box = document.getElementById("searchResults");
     if (!box) return;
 
