@@ -1,14 +1,20 @@
-alert("custom.js geladen");
+
 
 // ---------- globale variabelen ----------
 let lastClickedFeature = null;
 let searchResults = [];
+let appStarted = false;
 
 // ---------- start ----------
 function init() {
+    if (appStarted) return;
+
     if (!window.map || !window.layersList) {
         setTimeout(init, 300);
         return;
+    }
+
+    appStarted = true;
     }
 
     let mapDiv = document.getElementById("map");
