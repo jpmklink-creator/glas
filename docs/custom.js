@@ -125,14 +125,27 @@ if (searchBox) {
     });
 }
     // ---------- klik op marker ----------
-    map.on("singleclick", function(evt) {
+   map.on("singleclick", function(evt) {
 
-        map.forEachFeatureAtPixel(evt.pixel, function(feature) {
-            lastClickedFeature = feature;
-            setTimeout(addShareButtonToPopup, 200);
-        });
+    let feature = map.forEachFeatureAtPixel(
+        evt.pixel,
+        function(feature) {
+            return feature;
+        },
+        {
+            hitTolerance: 10
+        }
+    );
 
-    });
+    if (feature) {
+        lastClickedFeature = feature;
+
+        let coord = evt.coordinate;
+        openPopup(feature, coord);
+
+        setTimeout(addShareButtonToPopup, 200);
+    }
+});
 
     // ---------- openen via URL ----------
     map.once("rendercomplete", function () {
