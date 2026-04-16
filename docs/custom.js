@@ -269,7 +269,6 @@ function showLinks(id) {
         });
 }
 
-// ---------- toelichting ----------
 function showInfo() {
 
     let old = document.getElementById("infoWindow");
@@ -288,21 +287,20 @@ function showInfo() {
     box.style.padding = "15px";
     box.style.zIndex = "9999";
     box.style.overflowY = "auto";
-    box.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
 
     box.innerHTML = `
         <div style="text-align:right;">
             <button onclick="document.getElementById('infoWindow').remove()">✖ Sluiten</button>
         </div>
-
-        <h2>Toelichting</h2>
-
-        <p>
-        De kaart heeft vier lagen die verwijzen naar websites met foto’s en toelichting
-        van ramen in een bepaald gebied.
-        </p>
+        <div id="infoContent">Laden...</div>
     `;
 
     document.body.appendChild(box);
+
+    fetch("info.html")
+        .then(r => r.text())
+        .then(html => {
+            document.getElementById("infoContent").innerHTML = html;
+        });
 }
 
