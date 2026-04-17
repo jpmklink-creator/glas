@@ -402,7 +402,7 @@ function addShareButtonToPopup() {
             "?id=" + id;
 
         navigator.clipboard.writeText(url)
-            .then(() => alert("Link gekopieerd"))
+            .then(() => alert("Link staat op klembord"))
             .catch(() => alert(url));
     };
 
