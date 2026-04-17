@@ -218,8 +218,6 @@ function zoomToResult(i) {
     openPopup(f, coord);
 }
 
-// ---------- popup ----------
-V
 
 // ---------- bronnen ----------
 function showLinks(id) {
