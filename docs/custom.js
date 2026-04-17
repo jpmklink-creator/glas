@@ -317,40 +317,6 @@ function openPopup(feature, coord) {
         </div>
     `;
 
-    /* gewone link */
-    if (props.link) {
-        html += `
-            <div style="margin:6px 0;">
-                <a href="${props.link}" target="_blank">
-                    <u>link naar informatie</u>
-                </a>
-            </div>
-        `;
-    }
-
-    /* oostbrabant: bestand */
-    if (props.bestand) {
-        html += `
-            <div style="margin:6px 0;">
-                <a href="${props.bestand}" target="_blank">
-                    <u>link naar informatie</u>
-                </a>
-            </div>
-        `;
-    }
-
-    /* bronnenlijst via link_id */
-    if (props.link_id) {
-        html += `
-            <div style="margin:6px 0;">
-                <a href="#" onclick="showLinks(${props.link_id}); return false;">
-                    <u>meer informatie</u>
-                </a>
-            </div>
-        `;
-    }
-
-    /* overige velden */
     for (let key in props) {
 
         if (
@@ -359,10 +325,7 @@ function openPopup(feature, coord) {
             key === "plaats" ||
             key === "gebouw" ||
             key === "kerknaam" ||
-            key === "titel" ||
-            key === "link" ||
-            key === "bestand" ||
-            key === "link_id"
+            key === "titel"
         ) continue;
 
         let val = props[key];
@@ -371,9 +334,47 @@ function openPopup(feature, coord) {
             continue;
         }
 
+        // normaal veld "link"
+        if (key === "link") {
+            html += `
+                <div style="margin:6px 0;">
+                    <a href="${val}" target="_blank">
+                        <u>link naar informatie</u>
+                    </a>
+                </div>
+            `;
+            continue;
+        }
+
+        // veld "bestand"
+        if (key === "bestand") {
+            html += `
+                <div style="margin:6px 0;">
+                    <a href="${val}" target="_blank">
+                        <u>link naar informatie</u>
+                    </a>
+                </div>
+            `;
+            continue;
+        }
+
+        // link_id
+        if (key === "link_id") {
+            html += `
+                <div style="margin:6px 0;">
+                    <a href="#" onclick="showLinks(${val}); return false;">
+                        <u>meer informatie</u>
+                    </a>
+                </div>
+            `;
+            continue;
+        }
+
+        // overige velden
         html += `<div style="margin-top:4px;">${val}</div>`;
     }
 
     content.innerHTML = html;
     overlay.setPosition(coord);
 }
+
