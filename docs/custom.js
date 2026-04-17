@@ -282,4 +282,98 @@ function showInfo() {
             document.getElementById("infoContent").innerHTML = html;
         });
 }
+* ===== nieuwe openPopup() ===== */
+function openPopup(feature, coord) {
 
+    lastClickedFeature = feature;
+
+    let overlay = map.getOverlays().getArray()[0];
+    let content = document.getElementById("popup-content");
+
+    if (!overlay || !content) return;
+
+    content.innerHTML = "";
+    overlay.setPosition(undefined);
+
+    let props = feature.getProperties();
+
+    let plaats = props.plaats || "";
+    let gebouw = props.gebouw || props.kerknaam || "";
+    let titel  = props.titel || "";
+
+    let kop = "";
+
+    if (plaats && gebouw) {
+        kop = plaats + ", " + gebouw;
+    } else if (plaats && titel) {
+        kop = plaats + ", " + titel;
+    } else {
+        kop = plaats || gebouw || titel || "locatie";
+    }
+
+    let html = `
+        <div style="font-size:18px;font-weight:bold;margin-bottom:10px;">
+            ${kop}
+        </div>
+    `;
+
+    /* gewone link */
+    if (props.link) {
+        html += `
+            <div style="margin:6px 0;">
+                <a href="${props.link}" target="_blank">
+                    <u>link naar informatie</u>
+                </a>
+            </div>
+        `;
+    }
+
+    /* oostbrabant: bestand */
+    if (props.bestand) {
+        html += `
+            <div style="margin:6px 0;">
+                <a href="${props.bestand}" target="_blank">
+                    <u>link naar informatie</u>
+                </a>
+            </div>
+        `;
+    }
+
+    /* bronnenlijst via link_id */
+    if (props.link_id) {
+        html += `
+            <div style="margin:6px 0;">
+                <a href="#" onclick="showLinks(${props.link_id}); return false;">
+                    <u>meer informatie</u>
+                </a>
+            </div>
+        `;
+    }
+
+    /* overige velden */
+    for (let key in props) {
+
+        if (
+            key === "geometry" ||
+            key === "id" ||
+            key === "plaats" ||
+            key === "gebouw" ||
+            key === "kerknaam" ||
+            key === "titel" ||
+            key === "link" ||
+            key === "bestand" ||
+            key === "link_id"
+        ) continue;
+
+        let val = props[key];
+
+        if (val === null || val === "" || val === undefined || val === "null") {
+            continue;
+        }
+
+        html += `<div style="margin-top:4px;">${val}</div>`;
+    }
+
+    content.innerHTML = html;
+    overlay.setPosition(coord);
+}
