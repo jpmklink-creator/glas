@@ -106,8 +106,11 @@ function openPopup(feature,coord){
 }
                        
    if(key==='link_id'){
-   html += `<div style="margin:6px 0;"><a href="#" onclick="showLinks(${val}); return false;"><u>link naar informatie</u></a></div>`;
-   html += `<div id="extra-links-${val}" style="margin-top:6px;"><a href="#" onclick="showLinks(${val}); return false;"><u>nog meer informatie</u></a></div>`;
+   html += `<div id="extra-links-${val}" style="margin-top:6px;">
+       <a href="#" onclick="showLinks(${val}); return false;">
+           <u>nog meer informatie</u>
+       </a>
+   </div>`;
    continue;
  }
    html+=`<div style="margin-top:4px;">${val}</div>`;
