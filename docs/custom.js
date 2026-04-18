@@ -12,16 +12,20 @@ let searchResults = [];
 
 window.addEventListener('load', function(){
  setTimeout(function(){
-   map.getView().setCenter(ol.proj.fromLonLat([5.4,52.15]));
-   map.getView().setZoom(8);
-   setTimeout(function(){map.getView().setCenter(ol.proj.fromLonLat([5.4,52.15]));map.getView().setZoom(8);},200);
-   setTimeout(function(){map.getView().setCenter(ol.proj.fromLonLat([5.4,52.15]));map.getView().setZoom(8);},2500);
    createInfoPanel();
    bindSearch();
    map.on('singleclick', function(evt){
      let feature = map.forEachFeatureAtPixel(evt.pixel, f=>f, {hitTolerance:10});
      if(feature) openPopup(feature, evt.coordinate);
    });
+   function setStart(){
+     map.getView().setCenter(ol.proj.fromLonLat([5.4,52.15]));
+     map.getView().setZoom(8);
+   }
+   setStart();
+   setTimeout(setStart,500);
+   setTimeout(setStart,1500);
+   setTimeout(setStart,3000);
  },1000);
 });
 
