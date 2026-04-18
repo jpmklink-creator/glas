@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Excel naar links.json</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<h2>Excel naar links.json</h2>
+
+<input type="file" id="fileInput" accept=".xlsx,.xls">
+<button onclick="leesExcel()">Maak JSON</button>
+<button onclick="downloadJson()">Download</button>
+
+<pre id="output"></pre>
+
+<script>
+let laatsteJson = "";
+
+function leesExcel() {
+
+ let file = document.getElementById("fileInput").files[0];
+ if (!file) return;
+
+ let reader = new FileReader();
+
+ reader.onload = function(e){
+
+   let data = new Uint8Array(e.target.result);
+   let wb = XLSX.read(data,{type:"array"});
+   let sheet = wb.Sheets[wb.SheetNames[0]];
+   let rows = XLSX.utils.sheet_to_json(sheet);
+
+   let result = {};
+
+   rows.forEach(function(r){
+
+      let id = String(r.link_id).trim();
+      let titel = String(r.titel).trim();
+      let url = String(r.url).trim();
+
+      if (!result[id]) result[id] = [];
+
+      result[id].push({
+         titel:titel,
+         url:url
+      });
+   });
+
+   laatsteJson = JSON.stringify(result,null,2);
+   document.getElementById("output").textContent = laatsteJson;
+ };
+
+ reader.readAsArrayBuffer(file);
+}
+
+function downloadJson(){
+
+ if(!laatsteJson) return;
+
+ let blob = new Blob([laatsteJson],{type:"application/json"});
+ let a = document.createElement("a");
+
+ a.href = URL.createObjectURL(blob);
+ a.download = "links.json";
+ a.click();
+}
+</script>
+
+</body>
+</html>
