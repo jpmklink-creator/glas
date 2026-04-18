@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>ID controle</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<h2>ID controle Excel</h2>
+
+<input type="file" id="fileInput" accept=".xlsx,.xls">
+<button onclick="controleer()">Controleer</button>
+
+<div id="result"></div>
+
+<script>
+function controleer(){
+
+ let file = document.getElementById("fileInput").files[0];
+ if(!file) return;
+
+ let reader = new FileReader();
+
+ reader.onload = function(e){
+
+   let data = new Uint8Array(e.target.result);
+   let wb = XLSX.read(data,{type:"array"});
+   let sheet = wb.Sheets[wb.SheetNames[0]];
+   let rows = XLSX.utils.sheet_to_json(sheet);
+
+   let ids = {};
+   let fouten = [];
+   let hoogste = 0;
+
+   rows.forEach(function(r,i){
+
+      let regel = i + 2;
+      let id = String(r.link_id || "").trim();
+
+      if(!id){
+         fouten.push("Regel " + regel + ": geen id");
+         return;
+      }
+
+      if(!ids[id]) ids[id] = 0;
+      ids[id]++;
+
+      let num = parseInt(id);
+      if(num > hoogste) hoogste = num;
+
+      if(!r.titel) fouten.push("Regel " + regel + ": geen titel");
+      if(!r.url) fouten.push("Regel " + regel + ": geen url");
+   });
+
+   let html = "";
+   html += "<b>Hoogste id:</b> " + hoogste + "<br>";
+   html += "<b>Volgende id:</b> " + (hoogste+1) + "<br><br>";
+
+   for(let id in ids){
+      if(ids[id] > 1){
+         html += "id " + id + " komt " + ids[id] + " keer voor<br>";
+      }
+   }
+
+   if(fouten.length){
+      html += "<br><b>Fouten:</b><br>" + fouten.join("<br>");
+   }
+
+   document.getElementById("result").innerHTML = html;
+ };
+
+ reader.readAsArrayBuffer(file);
+}
+</script>
+
+</body>
+</html>
