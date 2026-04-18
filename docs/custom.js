@@ -43,7 +43,9 @@ function openSharedLocation(){
      let geom = f.getGeometry();
      let coord = geom.getType()==='Point' ? geom.getCoordinates() : ol.extent.getCenter(geom.getExtent());
      map.getView().animate({center:coord,zoom:18,duration:800});
-     setTimeout(function(){ openPopup(f,coord); },900);
+     setTimeout(function(){
+    openPopup(f, coord);
+}, 1600);
    });
  });
 }
