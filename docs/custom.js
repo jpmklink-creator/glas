@@ -26,8 +26,27 @@ window.addEventListener('load', function(){
    setTimeout(setStart,500);
    setTimeout(setStart,1500);
    setTimeout(setStart,3000);
+   setTimeout(openSharedLocation,3500);
  },1000);
 });
+
+function openSharedLocation(){
+ const params = new URLSearchParams(window.location.search);
+ const id = params.get('id');
+ if(!id) return;
+ layersList.forEach(function(layer){
+   if(!layer.getSource) return;
+   let source = layer.getSource();
+   if(!source.getFeatures) return;
+   source.getFeatures().forEach(function(f){
+     if(String(f.get('id')) !== String(id)) return;
+     let geom = f.getGeometry();
+     let coord = geom.getType()==='Point' ? geom.getCoordinates() : ol.extent.getCenter(geom.getExtent());
+     map.getView().animate({center:coord,zoom:18,duration:800});
+     setTimeout(function(){ openPopup(f,coord); },900);
+   });
+ });
+}
 
 function createInfoPanel(){
  if(document.querySelector('.info-panel')) return;
@@ -95,22 +114,10 @@ function openPopup(feature,coord){
  let kop=(plaats&&gebouw)?plaats+', '+gebouw:(plaats&&titel)?plaats+', '+titel:(plaats||gebouw||titel||'locatie');
  let html=`<div style="font-size:18px;font-weight:bold;margin-bottom:10px;">${kop}</div>`;
  for(let key in props){ if(['geometry','id','plaats','gebouw','kerknaam','titel'].includes(key)) continue; let val=props[key]; if(val==null||val===''||val==='null') continue;
-   
-  if(key==='link'||key==='bestand'){
-   html += `<div style="margin:6px 0;">
-       <a href="${val}" target="_blank">
-           <u>link naar informatie</u>
-       </a>
-   </div>`;
-   continue;
-}
-                       
+   if(key==='link'||key==='bestand'){ html+=`<div style="margin:6px 0;"><a href="${val}" target="_blank"><u>link naar informatie</u></a></div><div id="extra-links-${val}" style="margin-top:6px;"><a href="#" onclick="showLinks(${val}); return false;"><u>nog meer informatie</u></a></div>`; continue; }
    if(key==='link_id'){
-   html += `<div id="extra-links-${val}" style="margin-top:6px;">
-       <a href="#" onclick="showLinks(${val}); return false;">
-           <u>nog meer informatie</u>
-       </a>
-   </div>`;
+   html += `<div style="margin:6px 0;"><a href="#" onclick="showLinks(${val}); return false;"><u>link naar informatie</u></a></div>`;
+   html += `<div id="extra-links-${val}" style="margin-top:6px;"><a href="#" onclick="showLinks(${val}); return false;"><u>nog meer informatie</u></a></div>`;
    continue;
  }
    html+=`<div style="margin-top:4px;">${val}</div>`;
@@ -130,9 +137,8 @@ function showLinks(linkId){
      const cleanUrl = String(item.url||'').replace(/"/g,'');
      html += '<div style="margin-top:4px;"><a href="'+cleanUrl+'" target="_blank">'+item.titel+'</a></div>';
    });
-   target.innerHTML = html;
+   target.innerHTML = html; return false;"><u>nog meer informatie</u></a>' + html;
  });
 }
 
 function addShareButtonToPopup(){ let popup=document.getElementById('popup-content'); if(!popup||!lastClickedFeature) return; if(popup.querySelector('.share-btn')) return; let id=lastClickedFeature.get('id'); if(!id) return; let btn=document.createElement('button'); btn.className='share-btn'; btn.innerText='🔗 deel deze locatie'; btn.style.cssText='margin-top:12px;padding:6px 10px;cursor:pointer'; btn.onclick=function(){ let url=window.location.origin+window.location.pathname+'?id='+id; navigator.clipboard.writeText(url).then(()=>alert('Link staat op klembord')).catch(()=>alert(url));}; popup.appendChild(btn); }
-
