@@ -117,11 +117,19 @@ function openPopup(feature,coord){
  let html=`<div style="font-size:18px;font-weight:bold;margin-bottom:10px;">${kop}</div>`;
  for(let key in props){ if(['geometry','id','plaats','gebouw','kerknaam','titel'].includes(key)) continue; let val=props[key]; if(val==null||val===''||val==='null') continue;
    if(key==='link'||key==='bestand'){ html+=`<div style="margin:6px 0;"><a href="${val}" target="_blank"><u>link naar informatie</u></a></div><div id="extra-links-${val}" style="margin-top:6px;"><a href="#" onclick="showLinks(${val}); return false;"><u>nog meer informatie</u></a></div>`; continue; }
-   if(key==='link_id'){
-   html += `<div style="margin:6px 0;"><a href="#" onclick="showLinks(${val}); return false;"><u>link naar informatie</u></a></div>`;
-   html += `<div id="extra-links-${val}" style="margin-top:6px;"><a href="#" onclick="showLinks(${val}); return false;"><u>nog meer informatie</u></a></div>`;
+  if(key==='link_id'){
+
+   if(val === null || val === '' || val === undefined || val === 0 || val === '0'){
+      continue;
+   }
+
+   html += `<div id="extra-links-${val}" style="margin-top:6px;">
+      <a href="#" onclick="showLinks(${val}); return false;">
+         <u>nog meer informatie</u>
+      </a>
+   </div>`;
    continue;
- }
+}
    html+=`<div style="margin-top:4px;">${val}</div>`;
  }
  content.innerHTML=html; overlay.setPosition(coord); addShareButtonToPopup();
