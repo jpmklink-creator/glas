@@ -252,14 +252,18 @@ function zoomToResult(i) {
         coord = ol.proj.fromLonLat(coord);
     }
 
-    map.getView().animate({
-        center: coord,
-        zoom: 18,
-        duration: 500
-    });
-
-    openPopup(f, coord);
+    map.getView().animate(
+        {
+            center: coord,
+            zoom: 18,
+            duration: 500
+        },
+        function () {
+            openPopup(f, coord);
+        }
+    );
 }
+
 // ---------- bronnen ----------
 function showLinks(id) {
 
