@@ -119,9 +119,19 @@ function openPopup(feature,coord){
    if(key==='link'||key==='bestand'){ html+=`<div style="margin:6px 0;"><a href="${val}" target="_blank"><u>link naar informatie</u></a></div><div id="extra-links-${val}" style="margin-top:6px;"><a href="#" onclick="showLinks(${val}); return false;"><u>nog meer informatie</u></a></div>`; continue; }
   if(key==='link_id'){
 
+   if(key==='link_id'){
+
    if(val === null || val === '' || val === undefined || val === 0 || val === '0'){
       continue;
    }
+
+   html += `<div id="extra-links-${val}" style="margin-top:6px;">
+      <a href="#" onclick="showLinks(${val}); return false;">
+         <u>nog meer informatie</u>
+      </a>
+   </div>`;
+   continue;
+}
 
    html += `<div id="extra-links-${val}" style="margin-top:6px;">
       <a href="#" onclick="showLinks(${val}); return false;">
