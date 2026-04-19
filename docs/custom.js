@@ -43,9 +43,7 @@ function openSharedLocation(){
      let geom = f.getGeometry();
      let coord = geom.getType()==='Point' ? geom.getCoordinates() : ol.extent.getCenter(geom.getExtent());
      map.getView().animate({center:coord,zoom:18,duration:800});
-     setTimeout(function(){
-    openPopup(f, coord);
-}, 1600);
+     setTimeout(function(){ openPopup(f,coord); },900);
    });
  });
 }
@@ -88,7 +86,7 @@ function showResultsList(){
    return naamA.localeCompare(naamB,'nl');
  });
  let html=`<div style="border:1px solid #ccc;background:#fff;padding:8px;margin-top:8px;max-height:340px;overflow-y:auto;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><b>${searchResults.length} resultaten</b><button onclick="document.getElementById('searchResults').innerHTML=''">✖</button></div>`;
- searchResults.forEach(function(f,i){ let plaats=f.get('plaats')||''; let gebouw=f.get('gebouw')||f.get('kerknaam')||f.get('titel')||''; let tekst=plaats+(gebouw?', '+gebouw:''); html+=`<div style="margin:5px 0;"><a href="#" onclick="return selectSearchResult(${i});">${tekst}</a></div>`;});
+ searchResults.forEach(function(f,i){ let plaats=f.get('plaats')||''; let gebouw=f.get('gebouw')||f.get('kerknaam')||f.get('titel')||''; let tekst=plaats+(gebouw?', '+gebouw:''); let symbool='📍'; let layernaam=f.get('layer')||f.get('laag')||f.get('categorie')||''; if(layernaam){ symbool='🔹'; } html+=`<div style="margin:5px 0;"><a href="#" onclick="return selectSearchResult(${i});">${symbool} ${tekst}</a></div>`;});
  html+='</div>'; box.innerHTML=html;
 }
 
@@ -108,79 +106,24 @@ function showInfo(){
  fetch(window.location.pathname.replace('index.html','')+'info.html').then(r=>r.text()).then(html=>{document.getElementById('infoContent').innerHTML=html;});
 }
 
-function openPopup(feature, coord){
-
-    lastClickedFeature = feature;
-
-    let overlay = map.getOverlays().getArray()[0];
-    let content = document.getElementById('popup-content');
-
-    if(!overlay || !content) return;
-
-    content.innerHTML = '';
-    overlay.setPosition(undefined);
-
-    let props = feature.getProperties();
-
-    let plaats = props.plaats || '';
-    let gebouw = props.gebouw || props.kerknaam || '';
-    let titel  = props.titel || '';
-
-    let kop =
-        (plaats && gebouw) ? plaats + ', ' + gebouw :
-        (plaats && titel)  ? plaats + ', ' + titel :
-        (plaats || gebouw || titel || 'locatie');
-
-    let html = `
-        <div style="font-size:18px;font-weight:bold;margin-bottom:10px;">
-            ${kop}
-        </div>
-    `;
-
-    for(let key in props){
-
-        if(['geometry','id','plaats','gebouw','kerknaam','titel'].includes(key)) continue;
-
-        let val = props[key];
-
-        if(val === null || val === '' || val === undefined || val === 'null') continue;
-
-        // gewone link
-        if(key === 'link' || key === 'bestand'){
-            html += `
-                <div style="margin:6px 0;">
-                    <a href="${val}" target="_blank">
-                        <u>link naar informatie</u>
-                    </a>
-                </div>
-            `;
-            continue;
-        }
-
-        // extra links via links.json
-        if(key === 'link_id'){
-
-            if(val === 0 || val === '0') continue;
-
-            html += `
-                <div id="extra-links-${val}" style="margin-top:6px;">
-                    <a href="#" onclick="showLinks(${val}); return false;">
-                        <u>nog meer informatie</u>
-                    </a>
-                </div>
-            `;
-            continue;
-        }
-
-        // overige velden
-        html += `<div style="margin-top:4px;">${val}</div>`;
-    }
-
-    content.innerHTML = html;
-    overlay.setPosition(coord);
-    addShareButtonToPopup();
+function openPopup(feature,coord){
+ lastClickedFeature=feature;
+ let overlay=map.getOverlays().getArray()[0]; let content=document.getElementById('popup-content'); if(!overlay||!content) return;
+ content.innerHTML=''; overlay.setPosition(undefined);
+ let props=feature.getProperties(); let plaats=props.plaats||''; let gebouw=props.gebouw||props.kerknaam||''; let titel=props.titel||'';
+ let kop=(plaats&&gebouw)?plaats+', '+gebouw:(plaats&&titel)?plaats+', '+titel:(plaats||gebouw||titel||'locatie');
+ let html=`<div style="font-size:18px;font-weight:bold;margin-bottom:10px;">${kop}</div>`;
+ for(let key in props){ if(['geometry','id','plaats','gebouw','kerknaam','titel'].includes(key)) continue; let val=props[key]; if(val==null||val===''||val==='null') continue;
+   if(key==='link'||key==='bestand'){ html+=`<div style="margin:6px 0;"><a href="${val}" target="_blank"><u>link naar informatie</u></a></div><div id="extra-links-${val}" style="margin-top:6px;"><a href="#" onclick="showLinks(${val}); return false;"><u>nog meer informatie</u></a></div>`; continue; }
+   if(key==='link_id'){
+   html += `<div style="margin:6px 0;"><a href="#" onclick="showLinks(${val}); return false;"><u>link naar informatie</u></a></div>`;
+   html += `<div id="extra-links-${val}" style="margin-top:6px;"><a href="#" onclick="showLinks(${val}); return false;"><u>nog meer informatie</u></a></div>`;
+   continue;
+ }
+   html+=`<div style="margin-top:4px;">${val}</div>`;
+ }
+ content.innerHTML=html; overlay.setPosition(coord); addShareButtonToPopup();
 }
-
 
 function showLinks(linkId){
  fetch(window.location.pathname.replace('index.html','')+'links.json')
@@ -194,7 +137,7 @@ function showLinks(linkId){
      const cleanUrl = String(item.url||'').replace(/"/g,'');
      html += '<div style="margin-top:4px;"><a href="'+cleanUrl+'" target="_blank">'+item.titel+'</a></div>';
    });
-   target.innerHTML = html;
+   target.innerHTML = html; return false;"><u>nog meer informatie</u></a>' + html;
  });
 }
 
