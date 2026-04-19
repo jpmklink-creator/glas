@@ -1,3 +1,6 @@
+
+Excel naar links.json
+
 {
   "1": [
     {
@@ -194,5 +197,80 @@
       "titel": "foto 9",
       "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/f3fac956-40f9-c19e-5cf5-8e4eb110423e/media/f892e8de-e9d9-118e-547b-4806ddf557f5?mode=detail&view=horizontal&q=dussen&rows=1&page=213"
     }
+  ],
+  "9": [
+    {
+      "titel": "galerij van de apis, onder de lucida",
+      "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/7e6ae387-16b0-f0c3-25a3-a726252853eb/media/634bd0bd-8b51-8f38-9f86-9f500c364718?mode=detail&view=horizontal&q=glasmozaiek&rows=1&page=3"
+    },
+    {
+      "titel": "galerij van de apsis, onder de lucida",
+      "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/29929840-b5b3-a7a6-5f33-628f60f79ecb/media/6a9cca49-dc69-7f60-9078-ff198cd4d475?mode=detail&view=horizontal&q=glasmozaiek&rows=1&page=4"
+    },
+    {
+      "titel": "galerij van de apsis, onder de lucida",
+      "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/cdd9c12f-73f5-bdde-aea4-b6bb9cd20fdc/media/0b8cffb3-d8e6-d6e9-0174-6d5bb6f75c64?mode=detail&view=horizontal&q=glasmozaiek&rows=1&page=5"
+    }
+  ],
+  "10": [
+    {
+      "titel": "close-up",
+      "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/cf8f618d-e980-6d33-c27a-bd1e473ca7d2/media/ac4a3557-41cf-daf4-8f10-acc148e8ec6d?mode=detail&view=horizontal&q=glasmozaiek&rows=1&page=8"
+    },
+    {
+      "titel": "straatbeeld",
+      "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/339dd8f0-902d-729b-6b79-9095cb4567e0/media/e3ba3ad3-61e9-4c7e-b834-45317d3b0f18?mode=detail&view=horizontal&q=glasmozaiek&rows=1&page=7"
+    }
+  ],
+  "11": [
+    {
+      "titel": "zuidgevel",
+      "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/cd7f21d6-e359-3d29-1d4a-ea00564b01de/media/9bdeef3e-0db2-9f8d-c9c0-2caedb921dc5?mode=detail&view=horizontal&q=glas%20in%20beton%20heemstede&rows=1&page=1"
+    },
+    {
+      "titel": "interieur",
+      "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/2bb6bc43-c880-96da-1d9d-b2f9c37bd57f/media/f0720205-c6a5-8102-23eb-6e5ddf0c4e02?mode=detail&view=horizontal&q=glas%20in%20beton%20heemstede&rows=1&page=2"
+    },
+    {
+      "titel": "detail",
+      "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/8397ee3e-8737-31d9-b9e3-d86820de5d34/media/909de73e-b900-5969-48fb-a9490d8f5f06?mode=detail&view=horizontal&q=glas%20in%20beton%20heemstede&rows=1&page=4"
+    }
+  ],
+  "12": [
+    {
+      "titel": "raam",
+      "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/88865596-02a0-a009-110b-7821d512758a/media/a10f3d23-e272-abec-577a-0d6075189957?mode=detail&view=horizontal&q=glas%20in%20beton&rows=1&page=8"
+    },
+    {
+      "titel": "detail",
+      "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/322cbe8e-8c67-439d-a7c3-c1af96076a5a/media/c6fd97b7-9c2c-be52-dfcd-cdeae6378c51?mode=detail&view=horizontal&q=glas%20in%20beton&rows=1&page=7"
+    }
+  ],
+  "13": [
+    {
+      "titel": "raam",
+      "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/0c287e56-8dc4-c8e8-01a7-3f488ff8ebeb/media/b6c663f1-aeac-d5cb-06e7-82a9b51e4800?mode=detail&view=horizontal&q=glas%20in%20beton&rows=1&page=43"
+    }
+  ],
+  "14": [
+    {
+      "titel": "raam",
+      "url": "https://primary.jwwb.nl/public/e/e/8/vlaanderenoldenzeel/nswj4z/harlingen.jpg"
+    }
+  ],
+  "15": [
+    {
+      "titel": "ruimte",
+      "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/4059690f-45c7-8c4a-559c-c473d802258f/media/edd1214c-2607-f213-404b-d19e324a6009?mode=detail&view=horizontal&q=glas%20in%20beton&rows=1&page=63"
+    },
+    {
+      "titel": "ruime",
+      "url": "https://beeldbank.cultureelerfgoed.nl/rce-mediabank/detail/4059690f-45c7-8c4a-559c-c473d802258f/media/edd1214c-2607-f213-404b-d19e324a6009?mode=detail&view=horizontal&q=glas%20in%20beton&rows=1&page=63"
+    },
+    {
+      "titel": "ruimte",
+      "url": "https://www.youtube.com/watch?v=r5sAabr-NhY"
+    }
   ]
 }
+
