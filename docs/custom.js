@@ -133,12 +133,36 @@ function showResultsList(){
 
     box.innerHTML = html;
 }
+
+
 function zoomToResult(i){
- let f=searchResults[i]; if(!f) return; let geom=f.getGeometry(); let coord=geom.getType()==='Point'?geom.getCoordinates():ol.extent.getCenter(geom.getExtent());
- if(coord[0]<10) coord=ol.proj.fromLonLat(coord);
- map.getView().animate({center:coord,zoom:18,duration:700});
- setTimeout(function(){openPopup(f,coord);},750);
+
+    let f = searchResults[i];
+    if(!f) return;
+
+    highlightSearchResults();
+
+    let geom = f.getGeometry();
+
+    let coord = geom.getType() === 'Point'
+        ? geom.getCoordinates()
+        : ol.extent.getCenter(geom.getExtent());
+
+    if(coord[0] < 10){
+        coord = ol.proj.fromLonLat(coord);
+    }
+
+    map.getView().animate({
+        center: coord,
+        zoom: 18,
+        duration: 900
+    });
+
+    setTimeout(function(){
+        openPopup(f, coord);
+    }, 1200);
 }
+
 function selectSearchResult(i){ zoomToResult(i); return false; }
 
 function showInfo(){
