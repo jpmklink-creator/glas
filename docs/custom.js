@@ -107,7 +107,14 @@ function showResultsList(){
     let html = `
         <div style="border:1px solid #ccc;background:#fff;padding:8px;margin-top:8px;max-height:340px;overflow-y:auto;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            
+               <div>
                 <b>${searchResults.length} resultaten</b>
+                 <button onclick="shareSearchResults()" style="margin-left:8px;">
+                 🔗 Deel
+                </button>
+               </div>
+                
                 <button onclick="document.getElementById('searchResults').innerHTML=''">✖</button>
             </div>
     `;
@@ -318,3 +325,54 @@ function highlightSearchResults(){
     }, 15000);
 }
 
+function shareSearchResults(){
+
+    let q = document.getElementById('searchBox').value.trim();
+
+    if(!q) return;
+
+    let url =
+        window.location.origin +
+        window.location.pathname +
+        '?search=' + encodeURIComponent(q);
+
+    navigator.clipboard.writeText(url)
+        .then(() => alert('Zoeklink staat op klembord'))
+        .catch(() => alert(url));
+}
+
+function openSharedSearch(){
+
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('search');
+
+    if(!q) return;
+
+    let box = document.getElementById('searchBox');
+    if(!box) return;
+
+    box.value = q;
+
+    searchResults = [];
+
+    layersList.forEach(function(layer){
+
+        if(!layer.getSource) return;
+        let source = layer.getSource();
+        if(!source.getFeatures) return;
+
+        source.getFeatures().forEach(function(f){
+            searchFeature(f, q.toLowerCase());
+
+            if(f.get('features')){
+                f.get('features').forEach(inner =>
+                    searchFeature(inner, q.toLowerCase())
+                );
+            }
+        });
+    });
+
+    showResultsList();
+    highlightSearchResults();
+    fitSearchResults();
+}
