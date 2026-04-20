@@ -27,6 +27,7 @@ window.addEventListener('load', function(){
    setTimeout(setStart,1500);
    setTimeout(setStart,3000);
    setTimeout(openSharedLocation,3500);
+   setTimeout(openSharedSearch,3600);
  },1000);
 });
 
