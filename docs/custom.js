@@ -118,7 +118,7 @@ function showResultsList(){
         let gebouw = f.get('gebouw') || f.get('kerknaam') || f.get('titel') || '';
         let tekst = plaats + (gebouw ? ', ' + gebouw : '');
 
-        let symbool = '📍';
+        let symbool = '*';
 
         html += `
             <div style="margin:5px 0;">
