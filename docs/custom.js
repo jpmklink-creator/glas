@@ -344,13 +344,16 @@ function shareSearchResults(){
 
 function openSharedSearch(){
 
+    let box = document.getElementById('searchBox');
+    if(!box || typeof layersList === 'undefined'){
+        setTimeout(openSharedSearch, 1000);
+        return;
+    }
+
     const params = new URLSearchParams(window.location.search);
     const q = params.get('search');
 
     if(!q) return;
-
-    let box = document.getElementById('searchBox');
-    if(!box) return;
 
     box.value = q;
 
@@ -363,12 +366,13 @@ function openSharedSearch(){
         if(!source.getFeatures) return;
 
         source.getFeatures().forEach(function(f){
+
             searchFeature(f, q.toLowerCase());
 
             if(f.get('features')){
-                f.get('features').forEach(inner =>
-                    searchFeature(inner, q.toLowerCase())
-                );
+                f.get('features').forEach(function(inner){
+                    searchFeature(inner, q.toLowerCase());
+                });
             }
         });
     });
@@ -377,3 +381,4 @@ function openSharedSearch(){
     highlightSearchResults();
     fitSearchResults();
 }
+
