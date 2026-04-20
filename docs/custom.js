@@ -177,7 +177,9 @@ function selectSearchResult(i){ zoomToResult(i); return false; }
 
 function showInfo(){
  let old=document.getElementById('infoWindow'); if(old) old.remove();
- let box=document.createElement('div'); box.id='infoWindow'; box.style.cssText='position:fixed;top:10%;left:10%;width:80%;height:75%;background:white;border:1px solid #999;padding:15px;z-index:9999;overflow-y:auto';
+ let box=document.createElement('div'); 
+ box.id='infoWindow'; 
+ box.style.cssText='position:fixed;top:5%;left:10%;width:80%;height:90%;background:white;border:1px solid #999;padding:15px;z-index:9999;overflow-y:auto';
  box.innerHTML=`<div style="text-align:right;"><button onclick="document.getElementById('infoWindow').remove()">✖ Sluiten</button></div><div id="infoContent">Laden...</div>`;
  document.body.appendChild(box);
  fetch(window.location.pathname.replace('index.html','')+'info.html').then(r=>r.text()).then(html=>{document.getElementById('infoContent').innerHTML=html;});
